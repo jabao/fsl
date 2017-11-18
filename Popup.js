@@ -42,7 +42,7 @@ class Popup extends React.Component{
           onChangeText={(name) => this.setState({name})}
           ref = {(textInput) => {this.textInput = textInput; }}
         />
-        <DateTimePicker 
+        <DateTimePicker
           ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}
           onChange={this.setStartDate}/>
         <Button
@@ -50,7 +50,7 @@ class Popup extends React.Component{
           color="#4B0082"
           onPress={() => this._startDateTimePicker._showDateTimePicker()}
         />
-        <DateTimePicker 
+        <DateTimePicker
           ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}
           onChange={this.setEndDate}/>
         <Button
@@ -75,6 +75,7 @@ class Popup extends React.Component{
           title="Cancel"
           color="#DC143C"
           accessibilityLabel="Learn more about this purple button"
+          onPress={() => this.popupDialog.dismiss()}
         />
         </View>
       </PopupDialog>

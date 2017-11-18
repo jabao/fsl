@@ -75,7 +75,6 @@ export default class App extends Component {
   _createMarker(lat, long, desc) {
 
     this._popup.show(lat, long);
-
     let dbRef = firebase.database().ref('events');
     dbRef.push({
       coordinate: {latitude: lat, longitude: long},
