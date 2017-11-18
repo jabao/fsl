@@ -29,11 +29,11 @@ export default class App extends Component {
     locationResultlat: null,
     text: '',
     locationResultlong: null,
-    mapRegion: { 
+    mapRegion: {
       latitude: 32.8801,
       longitude: -117.2340,
-      latitudeDelta: 0.0922, 
-      longitudeDelta: 0.0421 
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
     },
    markers: [],
   };
@@ -44,20 +44,20 @@ export default class App extends Component {
     //grab user location and store it
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ 
-      locationResultlat: JSON.stringify(location.coords.latitude), 
+    this.setState({
+      locationResultlat: JSON.stringify(location.coords.latitude),
       locationResultlong: JSON.stringify(location.coords.longitude)
     });
-  
+
     //update mapRegion with user location
     let prevState = this.state;
     this.setState({
       mapRegion: {
         latitude: Number(prevState.locationResultlat),
         longitude: Number(prevState.locationResultlong),
-        latitudeDelta: 0.0922, 
+        latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
-    
+
       },
     });
   };
@@ -76,22 +76,16 @@ export default class App extends Component {
   //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
 
-  this._popup.show();
+    this._popup.show();
 
-	  this.setState({
-	    markers: [
-	      ...this.state.markers,
-	      {
-	        coordinate: {
-	          latitude: lat,
-	          longitude: long
-	        },
-	        description: desc,
-	        key: currId
-	      },
-	    ]
-	  });
-	  id++;
+    firebase.child('events').child(id).set({
+      coordinate: {lat, long},
+      description: desc,
+      key: id,
+      title: desc
+    });
+
+    id++;
   };
 
   componentWillMount() {
