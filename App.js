@@ -27,6 +27,9 @@ export default class App extends Component {
 
   //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
+
+  this.popupDialog.show();
+
   this.setState({
     markers: [
       ...this.state.markers,
@@ -62,7 +65,8 @@ export default class App extends Component {
         }}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker', id)}
+        onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker', id)
+      }
       >
 
       {this.state.markers.map(marker => (
