@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
+import {Permissions, Location} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 
@@ -18,6 +19,35 @@ export default class App extends Component {
     },
    markers: [],
   };
+
+
+    //Gets user location and updates mapRegion in state
+  _getLocationAsync = async () => {
+    //grab user location and store it
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ 
+      locationResultlat: JSON.stringify(location.coords.latitude), 
+      locationResultlong: JSON.stringify(location.coords.longitude)
+    });
+  
+    //update mapRegion with user location
+    let prevState = this.state;
+    this.setState({
+      mapRegion: {
+        latitude: Number(prevState.locationResultlat),
+        longitude: Number(prevState.locationResultlong),
+        latitudeDelta: 0.0922, 
+        longitudeDelta: 0.0421
+    
+      },
+    });
+  };
+
+    //calls getLocation method after map is rendered
+  componentDidMount() {
+    this._getLocationAsync();
+  }
 
 
   //updates mapRegion object in state
