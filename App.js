@@ -5,10 +5,26 @@ import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
+import firebase from 'firebase';
 
 let id = 0;
 
 export default class App extends Component {
+  // Initialize Firebase
+  constructor(props) {
+    super(props);
+
+    var config = {
+      apiKey: "AIzaSyA7jvpayAPe8W7mnUSY2utM9puTkScziZc",
+      authDomain: "mijmfsl.firebaseapp.com",
+      databaseURL: "https://mijmfsl.firebaseio.com",
+      projectId: "mijmfsl",
+      storageBucket: "",
+      messagingSenderId: "57827792969"
+    };
+    firebase.initializeApp(config);
+  }
+
   state = {
     locationResultlat: null,
     text: '',
@@ -78,13 +94,29 @@ export default class App extends Component {
 	  id++;
   };
 
+  componentWillMount() {
+    let eventsRef = firebase.database().ref('events');
+    eventsRef.on('value', function(data) {
+      var items = [];
+      data.forEach(function(dbevent) {
+        var item = dbevent.val()
+        item['.key'] = dbevent.key;
+        items.push(item);
+      }.bind(this));
+      this.setState({markers: items});
+    }.bind(this));
+  }
+
+  componentWillUnmount() {
+    firebase.off();
+  }
+
   render() {
     return (
       <View
         style={styles.container}
       >
       <MapView
-        provider = "google"
         style={styles.container}
         onRegionChange={this._handleMapRegionChange}
         region={this.state.mapRegion}
