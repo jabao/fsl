@@ -8,8 +8,10 @@ class Popup extends React.Component{
     details: '',
     lat: 0.0,
     long: 0.0,
+    eventStartDate: 'Choose Event Start Time',
+    eventEndDate: 'Choose Event End Time',
   }
-  show(lat, long) {
+  show(long, lat) {
     this.popupDialog.show();
     this.setState({lat: {lat}})
     this.setState({long: {long}})
@@ -24,6 +26,10 @@ class Popup extends React.Component{
     console.log(this.state.lat)
     this.popupDialog.dismiss()
   }
+
+  setStartDate = (date) => this.setState({eventStartDate: date});
+  setEndDate = (date) => this.setState({eventEndDate: date});
+
   render() {
     return (
       <PopupDialog
@@ -36,16 +42,19 @@ class Popup extends React.Component{
           onChangeText={(name) => this.setState({name})}
           ref = {(textInput) => {this.textInput = textInput; }}
         />
-        <DateTimePicker ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}/>
+        <DateTimePicker 
+          ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}
+          onChange={this.setStartDate}/>
         <Button
-          title="Choose Event Start Time"
+          title={this.state.eventStartDate.substring()}
           color="#4B0082"
           onPress={() => this._startDateTimePicker._showDateTimePicker()}
         />
-
-        <DateTimePicker ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}/>
+        <DateTimePicker 
+          ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}
+          onChange={this.setEndDate}/>
         <Button
-          title="Choose Event End Time"
+          title={this.state.eventEndDate.toString()}
           color="#4B0082"
           onPress={() => this._endDateTimePicker._showDateTimePicker()}
                   // this.setState({textValue:{this._endDateTimePicker.date}})}
