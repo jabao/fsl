@@ -7,8 +7,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
 import firebase from 'firebase';
 
-let id = 0;
-
 export default class App extends Component {
   // Initialize Firebase
   constructor(props) {
@@ -74,7 +72,7 @@ export default class App extends Component {
   };
 
   //creates a marker on the map
-  _createMarker(lat, long, desc, currId) {
+  _createMarker(lat, long, desc) {
 
     this._popup.show(lat, long);
 
@@ -82,11 +80,9 @@ export default class App extends Component {
     dbRef.push({
       coordinate: {latitude: lat, longitude: long},
       description: desc,
-      key: id,
       title: desc
     });
 
-    id++;
   };
 
   componentWillMount() {
@@ -124,7 +120,7 @@ export default class App extends Component {
         }}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker', id)
+        onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
       }
       >
 
