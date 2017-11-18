@@ -3,6 +3,8 @@ import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-nativ
 import {Permissions, Location} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import Popup from './Popup.js';
 
 let id = 0;
 
@@ -58,7 +60,7 @@ export default class App extends Component {
   //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
 
-  this.popupDialog.show();
+  this._popup.show();
 
   this.setState({
     markers: [
@@ -111,42 +113,7 @@ export default class App extends Component {
             />
         ))}
       </MapView>
-      <PopupDialog
-        ref={(popupDialog) => { this.popupDialog = popupDialog; }}
-      >
-        <View>
-        <TextInput
-          style={{height: 40}}
-          placeholder="Enter Event Name"
-          onChangeText={(text) => this.setState({text})}
-        />
-        <TextInput
-          style={{height: 40}}
-          placeholder="Enter Event Time"
-          onChangeText={(text) => this.setState({text})}
-        />
-        <TextInput
-          style={{height: 40}}
-          placeholder="Enter Event Date"
-          onChangeText={(text) => this.setState({text})}
-        />
-        <TextInput
-          style={{height: 40}}
-          placeholder="Enter Event Details"
-          onChangeText={(text) => this.setState({text})}
-        />
-        <Button
-          title="Save"
-          color="#32CD32"
-          accessibilityLabel="Learn more about this purple button"
-        />        
-        <Button
-          title="Cancel"
-          color="#DC143C"
-          accessibilityLabel="Learn more about this purple button"
-        />
-        </View>
-      </PopupDialog>
+      <Popup ref={(popup) => {this._popup = popup;}}/>
       </View>
     );
   }
