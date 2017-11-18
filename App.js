@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
+import PopupDialog from 'react-native-popup-dialog';
+
 let id = 0;
 
 export default class App extends Component {
@@ -15,6 +17,7 @@ export default class App extends Component {
     },
    markers: [],
   };
+
 
   //updates mapRegion object in state
   _handleMapRegionChange = mapRegion => {
@@ -41,6 +44,9 @@ export default class App extends Component {
 
   render() {
     return (
+      <View
+        style={styles.container}
+      >
       <MapView
         provider = "google"
         style={styles.container}
@@ -57,15 +63,28 @@ export default class App extends Component {
         showsMyLocationButton={true}
         onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker', id)}
       >
+
       {this.state.markers.map(marker => (
             <MapView.Marker
               key = {marker.key}
               title={marker.description}
               coordinate={marker.coordinate}
               description={marker.description}
+              onPress={() => {
+               this.popupDialog.show();
+              }}
             />
         ))}
       </MapView>
+      <PopupDialog
+        ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+      >
+        <View>
+
+          <Text>Hello</Text>
+        </View>
+      </PopupDialog>
+      </View>
     );
   }
 }
@@ -78,5 +97,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     width: '100%',
-  },
+  }
 });
