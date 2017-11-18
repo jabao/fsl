@@ -78,11 +78,13 @@ export default class App extends Component {
 
     this._popup.show();
 
-    firebase.child('events').child(id).set({
-      coordinate: {lat, long},
-      description: desc,
-      key: id,
-      title: desc
+    firebase.child('events').set({
+      id: {
+        coordinate: {lat, long},
+        description: desc,
+        key: id,
+        title: desc
+      }
     });
 
     id++;
