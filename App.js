@@ -16,8 +16,13 @@ export default class App extends Component {
    markers: [],
   };
 
+  //updates mapRegion object in state
+  _handleMapRegionChange = mapRegion => {
+      this.setState({ mapRegion });
+  };
+
+  //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
-  console.log("hi")
   this.setState({
     markers: [
       ...this.state.markers,
@@ -35,11 +40,12 @@ export default class App extends Component {
   };
 
   render() {
-    console.log("yo")
     return (
       <MapView
         provider = "google"
         style={styles.container}
+        onRegionChange={this._handleMapRegionChange}
+        region={this.state.mapRegion}
         showUserLocation={true}
         initialRegion = {{
           latitude: 32.8801,
@@ -48,6 +54,7 @@ export default class App extends Component {
           longitudeDelta: 0.0221
         }}
         showsUserLocation={true}
+        showsMyLocationButton={true}
         onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker', id)}
       >
       {this.state.markers.map(marker => (
