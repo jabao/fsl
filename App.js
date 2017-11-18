@@ -14,8 +14,8 @@ export default class App extends Component {
     text: '',
     locationResultlong: null,
     mapRegion: { 
-      latitude: 23, 
-      longitude: 32, 
+      latitude: 32.8801,
+      longitude: -117.2340,
       latitudeDelta: 0.0922, 
       longitudeDelta: 0.0421 
     },
@@ -62,20 +62,20 @@ export default class App extends Component {
 
   this._popup.show();
 
-  this.setState({
-    markers: [
-      ...this.state.markers,
-      {
-        coordinate: {
-          latitude: lat,
-          longitude: long
-        },
-        description: desc,
-        key: currId
-      },
-    ]
-  });
-  id++;
+	  this.setState({
+	    markers: [
+	      ...this.state.markers,
+	      {
+	        coordinate: {
+	          latitude: lat,
+	          longitude: long
+	        },
+	        description: desc,
+	        key: currId
+	      },
+	    ]
+	  });
+	  id++;
   };
 
   render() {
@@ -108,7 +108,7 @@ export default class App extends Component {
               coordinate={marker.coordinate}
               description={marker.description}
               onPress={() => {
-               this.popupDialog.show();
+               this._popup.show();
               }}
             />
         ))}
