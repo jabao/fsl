@@ -6,15 +6,23 @@ class Popup extends React.Component{
   state = {
     name: '',
     details: '',
+    lat: 0.0,
+    long: 0.0,
   }
-  show(long, lat) {
+  show(lat, long) {
     this.popupDialog.show();
+    this.setState({lat: {lat}})
+    this.setState({long: {long}})
   }
   sendInformation() {
     console.log('hi')
     console.log(this.state.name)
     console.log(this.state.details)
     console.log(this._startDateTimePicker.state.date)
+    console.log(this._endDateTimePicker.state.date)
+    console.log(this.state.long)
+    console.log(this.state.lat)
+    this.popupDialog.close()
   }
   render() {
     return (

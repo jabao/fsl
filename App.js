@@ -76,7 +76,7 @@ export default class App extends Component {
   //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
 
-    this._popup.show();
+    this._popup.show(lat, long);
 
     firebase.child('events').set({
       id: {
