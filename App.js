@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import {Permissions, Location} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -117,8 +117,33 @@ export default class App extends Component {
         <View>
         <TextInput
           style={{height: 40}}
-          placeholder="Type here to translate!"
+          placeholder="Enter Event Name"
           onChangeText={(text) => this.setState({text})}
+        />
+        <TextInput
+          style={{height: 40}}
+          placeholder="Enter Event Time"
+          onChangeText={(text) => this.setState({text})}
+        />
+        <TextInput
+          style={{height: 40}}
+          placeholder="Enter Event Date"
+          onChangeText={(text) => this.setState({text})}
+        />
+        <TextInput
+          style={{height: 40}}
+          placeholder="Enter Event Details"
+          onChangeText={(text) => this.setState({text})}
+        />
+        <Button
+          title="Save"
+          color="#32CD32"
+          accessibilityLabel="Learn more about this purple button"
+        />        
+        <Button
+          title="Cancel"
+          color="#DC143C"
+          accessibilityLabel="Learn more about this purple button"
         />
         </View>
       </PopupDialog>
@@ -135,5 +160,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     width: '100%',
-  }
+  },
+   textInput: {
+      height: 40,
+      width: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+      borderColor: 'gray',
+      borderWidth: 1,
+      textAlign: 'center',
+   }
 });
