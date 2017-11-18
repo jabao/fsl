@@ -14,6 +14,7 @@ export default class DateTimePickerTester extends Component {
 
   _handleDatePicked = (date) => {
     console.log('A date has been picked: ', date);
+    this.props.titleIOS = 'date';
     this.setState({date: {date}})
     this._hideDateTimePicker();
   };

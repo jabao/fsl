@@ -22,7 +22,7 @@ class Popup extends React.Component{
     console.log(this._endDateTimePicker.state.date)
     console.log(this.state.long)
     console.log(this.state.lat)
-    this.popupDialog.close()
+    this.popupDialog.dismiss()
   }
   render() {
     return (
