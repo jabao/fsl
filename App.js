@@ -5,19 +5,35 @@ import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
+import firebase from 'firebase';
 
 let id = 0;
 
 export default class App extends Component {
+  // Initialize Firebase
+  constructor(props) {
+    super(props);
+
+    var config = {
+      apiKey: "AIzaSyA7jvpayAPe8W7mnUSY2utM9puTkScziZc",
+      authDomain: "mijmfsl.firebaseapp.com",
+      databaseURL: "https://mijmfsl.firebaseio.com",
+      projectId: "mijmfsl",
+      storageBucket: "",
+      messagingSenderId: "57827792969"
+    };
+    firebase.initializeApp(config);
+  }
+
   state = {
     locationResultlat: null,
     text: '',
     locationResultlong: null,
-    mapRegion: { 
+    mapRegion: {
       latitude: 32.8801,
       longitude: -117.2340,
-      latitudeDelta: 0.0922, 
-      longitudeDelta: 0.0421 
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
     },
    markers: [],
   };
@@ -28,20 +44,20 @@ export default class App extends Component {
     //grab user location and store it
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ 
-      locationResultlat: JSON.stringify(location.coords.latitude), 
+    this.setState({
+      locationResultlat: JSON.stringify(location.coords.latitude),
       locationResultlong: JSON.stringify(location.coords.longitude)
     });
-  
+
     //update mapRegion with user location
     let prevState = this.state;
     this.setState({
       mapRegion: {
         latitude: Number(prevState.locationResultlat),
         longitude: Number(prevState.locationResultlong),
-        latitudeDelta: 0.0922, 
+        latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
-    
+
       },
     });
   };
@@ -60,23 +76,36 @@ export default class App extends Component {
   //creates a marker on the map
   _createMarker(lat, long, desc, currId) {
 
-  this._popup.show();
+    this._popup.show();
 
-	  this.setState({
-	    markers: [
-	      ...this.state.markers,
-	      {
-	        coordinate: {
-	          latitude: lat,
-	          longitude: long
-	        },
-	        description: desc,
-	        key: currId
-	      },
-	    ]
-	  });
-	  id++;
+    firebase.child('events').set({
+      id: {
+        coordinate: {lat, long},
+        description: desc,
+        key: id,
+        title: desc
+      }
+    });
+
+    id++;
   };
+
+  componentWillMount() {
+    let eventsRef = firebase.database().ref('events');
+    eventsRef.on('value', function(data) {
+      var items = [];
+      data.forEach(function(dbevent) {
+        var item = dbevent.val()
+        item['.key'] = dbevent.key;
+        items.push(item);
+      }.bind(this));
+      this.setState({markers: items});
+    }.bind(this));
+  }
+
+  componentWillUnmount() {
+    firebase.off();
+  }
 
   render() {
     return (
@@ -84,7 +113,6 @@ export default class App extends Component {
         style={styles.container}
       >
       <MapView
-        provider = "google"
         style={styles.container}
         onRegionChange={this._handleMapRegionChange}
         region={this.state.mapRegion}
