@@ -3,8 +3,17 @@ import PopupDialog from 'react-native-popup-dialog';
 import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import DateTimePicker from './Datepick.js';
 class Popup extends React.Component{
+  state = {
+    name: '',
+    details: '',
+  }
   show() {
     this.popupDialog.show();
+  }
+  sendInformation() {
+    console.log('hi')
+    console.log(this.state.name)
+    console.log(this.state.details)
   }
   render() {
     return (
@@ -15,14 +24,15 @@ class Popup extends React.Component{
         <TextInput
           style={{height: 40}}
           placeholder="Enter Event Name"
-          onChangeText={(text) => this.setState({text})}
+          onChangeText={(name) => this.setState({name})}
+          ref = {(textInput) => {this.textInput = textInput; }}
         />
         <DateTimePicker ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}/>
         <Button
           title="Choose Event Start Time"
           color="#4B0082"
           onPress={() => this._startDateTimePicker._showDateTimePicker()}
-        /> 
+        />
 
         <DateTimePicker ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}/>
         <Button
@@ -30,17 +40,19 @@ class Popup extends React.Component{
           color="#4B0082"
           onPress={() => this._endDateTimePicker._showDateTimePicker()}
                   // this.setState({textValue:{this._endDateTimePicker.date}})}
-        /> 
+        />
         <TextInput
           style={{height: 40}}
           placeholder="Enter Event Details"
-          onChangeText={(text) => this.setState({text})}
+          onChangeText={(details) => this.setState({details})}
+          ref = {(textInput) => {this.textInputD = textInput; }}
         />
         <Button
           title="Save"
           color="#32CD32"
           accessibilityLabel="Learn more about this purple button"
-        />        
+          onPress={() => this.sendInformation()}
+        />
         <Button
           title="Cancel"
           color="#DC143C"
