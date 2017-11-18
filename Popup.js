@@ -7,13 +7,14 @@ class Popup extends React.Component{
     name: '',
     details: '',
   }
-  show() {
+  show(long, lat) {
     this.popupDialog.show();
   }
   sendInformation() {
     console.log('hi')
     console.log(this.state.name)
     console.log(this.state.details)
+    console.log(this._startDateTimePicker.state.date)
   }
   render() {
     return (

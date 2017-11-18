@@ -5,6 +5,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 export default class DateTimePickerTester extends Component {
   state = {
     isDateTimePickerVisible: false,
+    date: ''
   };
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -13,6 +14,7 @@ export default class DateTimePickerTester extends Component {
 
   _handleDatePicked = (date) => {
     console.log('A date has been picked: ', date);
+    this.setState({date: {date}})
     this._hideDateTimePicker();
   };
 
