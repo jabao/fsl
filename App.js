@@ -79,8 +79,8 @@ export default class App extends Component {
     this._popup.show(lat, long);
 
     let dbRef = firebase.database().ref('events');
-    dbRef.child(id).set({
-      coordinate: {lat, long},
+    dbRef.push({
+      coordinate: {latitude: lat, longitude: long},
       description: desc,
       key: id,
       title: desc
