@@ -17,14 +17,20 @@ class Popup extends React.Component{
           placeholder="Enter Event Name"
           onChangeText={(text) => this.setState({text})}
         />
-        <DateTimePicker ref={(dateTimePicker) => {this._dateTimePicker = dateTimePicker;}}/>
+        <DateTimePicker ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}/>
         <Button
-          title="Choose Event Time"
+          title="Choose Event Start Time"
           color="#4B0082"
-          accessibilityLabel="Learn more about this purple button"
-          onPress={() => this._dateTimePicker._showDateTimePicker()}
+          onPress={() => this._startDateTimePicker._showDateTimePicker()}
         /> 
 
+        <DateTimePicker ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}/>
+        <Button
+          title="Choose Event End Time"
+          color="#4B0082"
+          onPress={() => this._endDateTimePicker._showDateTimePicker()}
+                  // this.setState({textValue:{this._endDateTimePicker.date}})}
+        /> 
         <TextInput
           style={{height: 40}}
           placeholder="Enter Event Details"
