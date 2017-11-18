@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 
@@ -8,6 +8,7 @@ let id = 0;
 export default class App extends Component {
   state = {
     locationResultlat: null,
+    text: '',
     locationResultlong: null,
     mapRegion: { 
       latitude: 23, 
@@ -80,8 +81,11 @@ export default class App extends Component {
         ref={(popupDialog) => { this.popupDialog = popupDialog; }}
       >
         <View>
-
-          <Text>Hello</Text>
+        <TextInput
+          style={{height: 40}}
+          placeholder="Type here to translate!"
+          onChangeText={(text) => this.setState({text})}
+        />
         </View>
       </PopupDialog>
       </View>
