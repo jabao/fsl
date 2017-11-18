@@ -9,10 +9,22 @@ class Popup extends React.Component{
     eventStartDate: 'Choose Event Start Time',
     eventEndDate: 'Choose Event End Time',
   }
-  show(long, lat) {
+  show(lat, long) {
+    this.lat = lat;
+    this.long = long;
     this.popupDialog.show();
   }
   sendInformation() {
+    let dbRef = this.props.db.database().ref('events');
+    dbRef.push({
+      coordinate: {latitude: this.lat, longitude: this.long},
+      description: this.state.details,
+      title: this.state.name,
+      // date: {
+      //   start: this.eventStartDate,
+      //   end: this.eventEndDate
+      // }
+    });
     console.log('hi')
     console.log(this.state.name)
     console.log(this.state.details)

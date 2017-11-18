@@ -73,16 +73,7 @@ export default class App extends Component {
 
   //creates a marker on the map
   _createMarker(lat, long, desc) {
-
     this._popup.show(lat, long);
-
-    let dbRef = firebase.database().ref('events');
-    dbRef.push({
-      coordinate: {latitude: lat, longitude: long},
-      description: desc,
-      title: desc
-    });
-
   };
 
   componentWillMount() {
@@ -126,8 +117,8 @@ export default class App extends Component {
 
       {this.state.markers.map(marker => (
             <MapView.Marker
-              key = {marker.key}
-              title={marker.description}
+              key={marker.key}
+              title={marker.title}
               coordinate={marker.coordinate}
               description={marker.description}
               onPress={() => {
@@ -136,7 +127,7 @@ export default class App extends Component {
             />
         ))}
       </MapView>
-      <Popup ref={(popup) => {this._popup = popup;}}/>
+      <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       </View>
     );
   }
