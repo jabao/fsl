@@ -20,10 +20,10 @@ class Popup extends React.Component{
       coordinate: {latitude: this.lat, longitude: this.long},
       description: this.state.details,
       title: this.state.name,
-      // date: {
-      //   start: this.eventStartDate,
-      //   end: this.eventEndDate
-      // }
+      date: {
+        start: this._startDateTimePicker.state.date,
+        end: this._endDateTimePicker.state.date
+      }
     });
     console.log('hi')
     console.log(this.state.name)
