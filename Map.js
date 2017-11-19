@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#202646',
     borderRadius: 10,
+    zIndex: 10,
   },
 
   logoutText: {
