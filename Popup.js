@@ -6,8 +6,6 @@ class Popup extends React.Component{
   state = {
     name: '',
     details: '',
-    lat: 0.0,
-    long: 0.0,
     eventStartDate: 'Choose Event Start Time',
     eventEndDate: 'Choose Event End Time',
   }
@@ -15,8 +13,6 @@ class Popup extends React.Component{
     this.lat = lat;
     this.long = long;
     this.popupDialog.show();
-    this.setState({lat: {lat}})
-    this.setState({long: {long}})
   }
   sendInformation() {
     let dbRef = this.props.db.database().ref('events');
@@ -34,8 +30,8 @@ class Popup extends React.Component{
     console.log(this.state.details)
     console.log(this._startDateTimePicker.state.date)
     console.log(this._endDateTimePicker.state.date)
-    console.log(this.state.long)
-    console.log(this.state.lat)
+    console.log(this.long)
+    console.log(this.lat)
     this.popupDialog.dismiss()
   }
 
