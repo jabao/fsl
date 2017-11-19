@@ -21,8 +21,8 @@ class Popup extends React.Component{
       description: this.state.details,
       title: this.state.name,
       date: {
-        start: this._startDateTimePicker.state.date,
-        end: this._endDateTimePicker.state.date
+        start: this._startDateTimePicker.state.date.date,
+        end: this._endDateTimePicker.state.date.date
       }
     });
     console.log('hi')

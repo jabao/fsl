@@ -82,8 +82,13 @@ export default class App extends Component {
       var items = [];
       data.forEach(function(dbevent) {
         var item = dbevent.val()
-        item['.key'] = dbevent.key;
-        items.push(item);
+        // check if now is within event start and end dates
+        let now = new Date();
+        if (new Date(item.date.start) <= now &&
+            now <= new Date(item.date.end)) {
+          item['.key'] = dbevent.key;
+          items.push(item);
+        }
       }.bind(this));
       this.setState({markers: items});
     }.bind(this));
