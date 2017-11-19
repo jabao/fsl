@@ -8,19 +8,14 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import { LoginForm } from './LoginForm'
+import { ForgotForm } from './ForgotForm'
 import { Actions } from 'react-native-router-flux';
 
 
-
-export class Login extends Component {
-
-	signup() {
-		Actions.signup();
-	}
-
-	forgot() {
-		Actions.forgot();
+export class Forgot extends Component {
+	
+	goback() {
+		Actions.pop();
 	}
 
 	render() {
@@ -37,22 +32,14 @@ export class Login extends Component {
 					<Text style={styles.title}>Free Food Locator</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<LoginForm />
+					<ForgotForm />
 				</View>
-				<View style={styles.forgotTextContainer}>
-					<Text style={styles.signupText}>
-						Forgot your password? 
+				<View style={styles.buttonContainer}>
+					<Text style={styles.button}>
+						Already have an account yet?
 					</Text>
-					<TouchableOpacity onPress={this.forgot}>
-						<Text style={styles.signupButton}>Retrieve</Text>
-					</TouchableOpacity>
-				</View>				
-				<View style={styles.signupTextContainer}>
-					<Text style={styles.signupText}>
-						Don't have an account yet? 
-					</Text>
-					<TouchableOpacity onPress={this.signup}>
-						<Text style={styles.signupButton}>Sign up</Text>
+					<TouchableOpacity onPress={this.goback}>
+						<Text style={styles.buttonText}>Sign in</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>
@@ -80,24 +67,18 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		opacity: 0.9,
 	},
-	forgotTextContainer: {
-		flexGrow: 1,
-		alignItems: 'flex-end',
-		justifyContent: 'center',
-		flexDirection: 'row'
-	},
-	signupTextContainer: {
+	buttonContainer: {
 		flexGrow: 1,
 		alignItems: 'flex-end',
 		justifyContent: 'center',
 		paddingVertical: 16,
 		flexDirection: 'row'
 	},
-	signupText: {
+	button: {
 		color: 'rgba(255,255,255,0.6)',
 		fontSize: 16
 	},
-	signupButton: {
+	buttonText: {
 		color: '#ffffff',
 		fontSize: 16,
 		fontWeight: '500'
