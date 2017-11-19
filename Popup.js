@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import PopupDialog from 'react-native-popup-dialog';
 import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import DateTimePicker from './Datepick.js';
+
 class Popup extends React.Component{
   state = {
     name: '',
     details: '',
     eventStartDate: 'Choose Event Start Time',
     eventEndDate: 'Choose Event End Time',
+    tag: 'blue',
   }
   show(lat, long) {
     this.lat = lat;
@@ -23,7 +25,8 @@ class Popup extends React.Component{
       date: {
         start: this._startDateTimePicker.state.date.date,
         end: this._endDateTimePicker.state.date.date
-      }
+      },
+      tag: this.state.tag
     });
     console.log('hi')
     console.log(this.state.name)

@@ -7,6 +7,12 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
 import firebase from 'firebase';
 
+//import image files for markers
+import blueImg from './images/flag-blue.png';
+import pinkImg from './images/flag-pink.png';
+
+
+
 export default class App extends Component {
   // Initialize Firebase
   constructor(props) {
@@ -76,6 +82,22 @@ export default class App extends Component {
     this._popup.show(lat, long);
   };
 
+  //sets image for MapMarker depending on event's tag
+  _setMarkerImg(tag){
+    switch(tag) {
+      case 'blue':
+        return blueImg;
+        break;
+
+      case 'pink':
+        return pinkImg;
+        break;
+
+      default:
+        return null;
+    }
+  }
+
   componentWillMount() {
     let eventsRef = firebase.database().ref('events');
     eventsRef.on('value', function(data) {
@@ -124,6 +146,7 @@ export default class App extends Component {
             <MapView.Marker
               key={marker.key}
               title={marker.title}
+              image={this._setMarkerImg(marker.tag)}
               coordinate={marker.coordinate}
               description={marker.description}
               onPress={() => {
