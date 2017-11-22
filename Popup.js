@@ -23,8 +23,9 @@ class Popup extends React.Component{
       description: this.state.details,
       title: this.state.name,
       date: {
-        start: this._startDateTimePicker.state.date.date,
-        end: this._endDateTimePicker.state.date.date
+        // milliseconds since epoch
+        start: new Date(this.state.eventStartDate).getTime(),
+        end: new Date(this.state.eventEndDate).getTime()
       },
       tag: this.state.tag
     });
