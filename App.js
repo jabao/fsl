@@ -30,26 +30,26 @@ export default class App extends Component {
       messagingSenderId: "57827792969"
     };
     firebase.initializeApp(config);
+    this.state = {
+      userRegion: {
+        latitude: 32.8801,
+        longitude: -117.2340,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      mapRegion: {
+        latitude: 32.8801,
+        longitude: -117.2340,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+     markers: [],
+     filteredMarkers: [],
+     renderedMarkers: [],
+     showModal: false,
+     tag: 'default'
+    }
   }
-
-  state = {
-    userRegion: {
-      latitude: 32.8801,
-      longitude: -117.2340,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
-    },
-    mapRegion: {
-      latitude: 32.8801,
-      longitude: -117.2340,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
-    },
-   markers: [],
-   filteredMarkers: [],
-   showModal: true,
-   tag: 'food'
-  };
 
 
     //Gets user location and updates mapRegion in state
@@ -132,19 +132,24 @@ export default class App extends Component {
         }
       }.bind(this));
       this.setState({markers: items});
+      this.setState({renderedMarkers: items});
     }.bind(this));
   }
 
-  // getFilteredResults(tag) {
-  //     var items = [];
-  //     this.state.markers.forEach(function(marker) {
-  //       var item = marker.val();
-  //       if (item.tag == tag){
-  //         items.push(item);
-  //       }
-  //     }.bind(this));
-  //     this.setState({filteredMarkers: items});
-  // }
+  getFilteredResults() {
+    if(this.state.tag == 'none'){
+      this.setState({renderedMarkers: this.state.markers});
+    }else{
+      var items = [];
+      this.state.markers.map(function (marker) {
+        if(marker.tag == this.state.tag){
+          items.push(marker);
+        }
+      }, this);
+      this.setState({filteredMarkers: items});
+      this.setState({renderedMarkers: items});
+    }
+  }
 
   componentWillUnmount() {
     firebase.off();
@@ -172,8 +177,7 @@ export default class App extends Component {
         onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
       }
       >
-
-      {this.state.markers.map(marker => (
+        {this.state.renderedMarkers.map(marker => (
             <MapView.Marker
               key={marker.key}
               title={marker.title}
@@ -184,7 +188,7 @@ export default class App extends Component {
                this._popup.show();
               }}
             />
-        ))}
+        ))}      
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
@@ -199,12 +203,14 @@ export default class App extends Component {
         onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
       </ActionButton>
        <Modal isVisible={this.state.showModal}
-          onBackdropPress= {this._hideModal}>
+          onBackdropPress={this._hideModal}
+          onModalHide={this.getFilteredResults.bind(this)}>
           <View style={{ flex: .5, backgroundColor: '#fff' }}>
             <Text style={{textAlign:'center'}}>Choose Filter</Text>
             <Picker
               selectedValue={this.state.tag.toString()}
               onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
+              <Picker.Item label="None" value="none" />
               <Picker.Item label="Food" value="food" />
               <Picker.Item label="Gluten Free" value="gluten" />
               <Picker.Item label="Vegetarian" value="veg" />   
