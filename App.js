@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, Button, Picker } from 'react-native';
 import {Permissions, Location} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -7,6 +7,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
 import firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
+import Modal from 'react-native-modal';
 
 //import image files for markers
 import veg from './images/veg.png';
@@ -45,6 +46,9 @@ export default class App extends Component {
       longitudeDelta: 0.0421
     },
    markers: [],
+   filteredMarkers: [],
+   showModal: true,
+   tag: 'food'
   };
 
 
@@ -68,7 +72,12 @@ export default class App extends Component {
     });
   };
 
-    //calls getLocation method after map is rendered
+  //toggle Filter Modal
+  _showModal = () => this.setState({ showModal: true })
+
+  _hideModal = () => this.setState({ showModal: false })
+
+  //calls getLocation method after map is rendered
   componentDidMount() {
     this._getLocationAsync();
   }
@@ -126,6 +135,17 @@ export default class App extends Component {
     }.bind(this));
   }
 
+  // getFilteredResults(tag) {
+  //     var items = [];
+  //     this.state.markers.forEach(function(marker) {
+  //       var item = marker.val();
+  //       if (item.tag == tag){
+  //         items.push(item);
+  //       }
+  //     }.bind(this));
+  //     this.setState({filteredMarkers: items});
+  // }
+
   componentWillUnmount() {
     firebase.off();
   }
@@ -167,11 +187,31 @@ export default class App extends Component {
         ))}
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
-        style={styles.actionButton}
+        style={styles.filterButton}
+        buttonText="FLT"
+        degrees={Number(0)}
+        onPress= {this._showModal}>
+      </ActionButton>
+      <ActionButton buttonColor="rgba(231,76,60,1)" 
+        style={styles.centerButton}
         buttonText="CTR"
         degrees={Number(0)}
         onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
       </ActionButton>
+       <Modal isVisible={this.state.showModal}
+          onBackdropPress= {this._hideModal}>
+          <View style={{ flex: .5, backgroundColor: '#fff' }}>
+            <Text style={{textAlign:'center'}}>Choose Filter</Text>
+            <Picker
+              selectedValue={this.state.tag.toString()}
+              onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
+              <Picker.Item label="Food" value="food" />
+              <Picker.Item label="Gluten Free" value="gluten" />
+              <Picker.Item label="Vegetarian" value="veg" />   
+              <Picker.Item label="Other" value="other" />       
+            </Picker>
+          </View>
+        </Modal>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       </View>
     );
@@ -197,11 +237,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: 'center',
   },
-  actionButton: {
+  centerButton: {
     position: 'absolute',
     width: 20,
     height: 20,
     top: '80%',
+    left: '80%',
+  },
+  filterButton: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    top: 10,
     left: '80%',
   }
 });
