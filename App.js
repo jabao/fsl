@@ -6,6 +6,7 @@ import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
 import firebase from 'firebase';
+import ActionButton from 'react-native-action-button';
 
 //import image files for markers
 import veg from './images/veg.png';
@@ -31,9 +32,12 @@ export default class App extends Component {
   }
 
   state = {
-    locationResultlat: null,
-    text: '',
-    locationResultlong: null,
+    userRegion: {
+      latitude: 32.8801,
+      longitude: -117.2340,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
+    },
     mapRegion: {
       latitude: 32.8801,
       longitude: -117.2340,
@@ -50,20 +54,17 @@ export default class App extends Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
     this.setState({
-      locationResultlat: JSON.stringify(location.coords.latitude),
-      locationResultlong: JSON.stringify(location.coords.longitude)
+      userRegion: {
+        latitude:  Number(JSON.stringify(location.coords.latitude)),
+        longitude: Number(JSON.stringify(location.coords.longitude)),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }
     });
 
     //update mapRegion with user location
-    let prevState = this.state;
     this.setState({
-      mapRegion: {
-        latitude: Number(prevState.locationResultlat),
-        longitude: Number(prevState.locationResultlong),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-
-      },
+      mapRegion: this.state.userRegion
     });
   };
 
@@ -117,7 +118,7 @@ export default class App extends Component {
         let now = new Date();
         if (new Date(item.date.start) <= now &&
             now <= new Date(item.date.end)) {
-          item['.key'] = dbevent.key;
+          item['key'] = dbevent.key;
           items.push(item);
         }
       }.bind(this));
@@ -135,6 +136,7 @@ export default class App extends Component {
         style={styles.container}
       >
       <MapView
+        ref = {(mapView) => { _map = mapView; }}
         style={styles.container}
         onRegionChange={this._handleMapRegionChange}
         region={this.state.mapRegion}
@@ -164,6 +166,12 @@ export default class App extends Component {
             />
         ))}
       </MapView>
+      <ActionButton buttonColor="rgba(231,76,60,1)" 
+        style={styles.actionButton}
+        buttonText="CTR"
+        degrees={Number(0)}
+        onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
+      </ActionButton>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       </View>
     );
@@ -179,14 +187,21 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-   textInput: {
-      height: 40,
-      width: 200,
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-      borderColor: 'gray',
-      borderWidth: 1,
-      textAlign: 'center',
-   }
+  textInput: {
+    height: 40,
+    width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    textAlign: 'center',
+  },
+  actionButton: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    top: '80%',
+    left: '80%',
+  }
 });
