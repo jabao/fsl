@@ -8,9 +8,10 @@ import Popup from './Popup.js';
 import firebase from 'firebase';
 
 //import image files for markers
-import blueImg from './images/flag-blue.png';
-import pinkImg from './images/flag-pink.png';
-
+import veg from './images/veg.png';
+import food from './images/food.png';
+import gluten from './images/gluten.png';
+import other from './images/other.png';
 
 
 export default class App extends Component {
@@ -85,14 +86,22 @@ export default class App extends Component {
   //sets image for MapMarker depending on event's tag
   _setMarkerImg(tag){
     switch(tag) {
-      case 'blue':
-        return blueImg;
+      case 'veg':
+        return veg;
         break;
 
-      case 'pink':
-        return pinkImg;
+      case 'gluten':
+        return gluten;
         break;
 
+      case 'food':
+        return food;
+        break;
+
+      case 'other':
+        return other;
+        break;
+        
       default:
         return null;
     }

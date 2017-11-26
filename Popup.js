@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PopupDialog from 'react-native-popup-dialog';
-import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { Picker, Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import DateTimePicker from './Datepick.js';
 
 class Popup extends React.Component{
@@ -9,7 +9,7 @@ class Popup extends React.Component{
     details: '',
     eventStartDate: 'Choose Event Start Time',
     eventEndDate: 'Choose Event End Time',
-    tag: 'blue',
+    tag: 'food',
   }
   show(lat, long) {
     this.lat = lat;
@@ -77,6 +77,14 @@ class Popup extends React.Component{
           onChangeText={(details) => this.setState({details})}
           ref = {(textInput) => {this.textInputD = textInput; }}
         />
+        <Picker
+          selectedValue={this.state.tag.toString()}
+          onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
+          <Picker.Item label="Food" value="food" />
+          <Picker.Item label="Gluten Free" value="gluten" />
+          <Picker.Item label="Vegetarian" value="veg" />   
+          <Picker.Item label="Other" value="other" />       
+        </Picker>
         <Button
           title="Save"
           color="#32CD32"
