@@ -188,10 +188,8 @@ export default class App extends Component {
             <MapView.Marker
               ref={marker => (this.marker = marker)}
               key={marker.key}
-              title={marker.title}
               image={this._setMarkerImg(marker.tag)}
               coordinate={marker.coordinate}
-              description={marker.description}
               onPress={() => {
                this.showEventModal(marker);
               }} />
