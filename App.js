@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, TextInput, Button, Picker } from 'react-native';
-import {Permissions, Location} from 'expo';
+import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -8,6 +8,7 @@ import Popup from './Popup.js';
 import firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
 import Modal from 'react-native-modal';
+import { Icons } from 'react-native-fontawesome';
 
 //import image files for markers
 import veg from './images/veg.png';
@@ -84,10 +85,13 @@ export default class App extends Component {
 
   hideEventModal = () => this.setState({ eventModal: false })
 
-
   //calls getLocation method after map is rendered
-  componentDidMount() {
+  async componentDidMount() {
     this._getLocationAsync();
+    await Font.loadAsync({
+      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
+    });
+    this.setState({ fontLoaded: true });
   }
 
 
@@ -163,7 +167,7 @@ export default class App extends Component {
     firebase.off();
   }
 
-  render() {
+  render() {    
     return (
       <View
         style={styles.container}
@@ -197,13 +201,21 @@ export default class App extends Component {
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
-        buttonText="FLT"
+        icon={this.state.fontLoaded ? (
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 25, color: '#fff' }}>
+            {Icons.list}
+          </Text>
+        ) : null}
         degrees={Number(0)}
         onPress= {this.showFilterModal}>
       </ActionButton>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.centerButton}
-        buttonText="CTR"
+        icon={this.state.fontLoaded ? (
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+            {Icons.compass}
+          </Text>
+        ) : null}
         degrees={Number(0)}
         onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
       </ActionButton>
