@@ -47,7 +47,9 @@ export default class App extends Component {
      filteredMarkers: [],
      renderedMarkers: [],
      showModal: false,
-     tag: 'default'
+     eventModal: false,
+     tag: 'none',
+     selectedEvent: 'null'
     }
   }
 
@@ -73,9 +75,15 @@ export default class App extends Component {
   };
 
   //toggle Filter Modal
-  _showModal = () => this.setState({ showModal: true })
+  showFilterModal = () => this.setState({ filterModal: true })
 
-  _hideModal = () => this.setState({ showModal: false })
+  hideFilterModal = () => this.setState({ filterModal: false })
+
+  //toggle Event Modal
+  showEventModal = (marker) => this.setState({ eventModal: true, selectedEvent: marker })
+
+  hideEventModal = () => this.setState({ eventModal: false })
+
 
   //calls getLocation method after map is rendered
   componentDidMount() {
@@ -173,28 +181,27 @@ export default class App extends Component {
           longitudeDelta: 0.0221
         }}
         showsUserLocation={true}
-        showsMyLocationButton={true}
         onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
       }
       >
         {this.state.renderedMarkers.map(marker => (
             <MapView.Marker
+              ref={marker => (this.marker = marker)}
               key={marker.key}
               title={marker.title}
               image={this._setMarkerImg(marker.tag)}
               coordinate={marker.coordinate}
               description={marker.description}
               onPress={() => {
-               this._popup.show();
-              }}
-            />
+               this.showEventModal(marker);
+              }} />
         ))}      
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
         buttonText="FLT"
         degrees={Number(0)}
-        onPress= {this._showModal}>
+        onPress= {this.showFilterModal}>
       </ActionButton>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.centerButton}
@@ -202,10 +209,10 @@ export default class App extends Component {
         degrees={Number(0)}
         onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
       </ActionButton>
-       <Modal isVisible={this.state.showModal}
-          onBackdropPress={this._hideModal}
+       <Modal isVisible={this.state.filterModal}
+          onBackdropPress={this.hideFilterModal}
           onModalHide={this.getFilteredResults.bind(this)}>
-          <View style={{ flex: .5, backgroundColor: '#fff' }}>
+          <View style={styles.modal}>
             <Text style={{textAlign:'center'}}>Choose Filter</Text>
             <Picker
               selectedValue={this.state.tag.toString()}
@@ -216,6 +223,13 @@ export default class App extends Component {
               <Picker.Item label="Vegetarian" value="veg" />   
               <Picker.Item label="Other" value="other" />       
             </Picker>
+          </View>
+        </Modal>
+        <Modal isVisible={this.state.eventModal}
+        onBackdropPress={this.hideEventModal}>
+          <View style={styles.modal}>
+            <Text>Event Name: {this.state.selectedEvent.title}</Text>
+            <Text>Event Details: {this.state.selectedEvent.description}</Text>
           </View>
         </Modal>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
@@ -256,5 +270,10 @@ const styles = StyleSheet.create({
     height: 20,
     top: 10,
     left: '80%',
+  },
+  modal: {
+     flex: .5, 
+     backgroundColor: 
+     '#fff',
   }
 });
