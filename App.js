@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, Button, Picker } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Picker } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -85,6 +85,7 @@ export default class App extends Component {
 
   hideEventModal = () => this.setState({ eventModal: false })
 
+  //update selected event's score in database
   updateScore () {
     var updates = {};
     updates['/score'] = this.state.selectedEvent.score;
@@ -93,6 +94,7 @@ export default class App extends Component {
     console.log(this.state.renderedMarkers);
   }
 
+  //function when user thumbs up event
   thumbsUpEvent () {
     this.setState(prevState => ({
       selectedEvent: {
@@ -102,6 +104,7 @@ export default class App extends Component {
     }), this.updateScore);
   }
 
+  //function when user thumbs down event
   thumbsDownEvent () {
     this.setState(prevState => ({
       selectedEvent: {
@@ -155,7 +158,9 @@ export default class App extends Component {
     }
   }
 
+  //after component is rendered
   componentWillMount() {
+    //pull events from database
     let eventsRef = firebase.database().ref('events');
     eventsRef.on('value', function(data) {
       var items = [];
@@ -169,6 +174,7 @@ export default class App extends Component {
           items.push(item);
         }
       }.bind(this));
+      //set markers in state and renderedmarkers if not currently filtered
       this.setState({markers: items});
       if(this.state.tag == 'none'){
         this.setState({renderedMarkers: items});
@@ -176,6 +182,7 @@ export default class App extends Component {
     }.bind(this));
   }
 
+  //get events that have a certain tag and sets them to renderedMarkers
   getFilteredResults() {
     if(this.state.tag == 'none'){
       this.setState({renderedMarkers: this.state.markers});
@@ -269,29 +276,33 @@ export default class App extends Component {
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
-            <View style={styles.button}>
-              <ActionButton
-              style={styles.thumbsUpButton}
-              icon={this.state.fontLoaded ? (
-                <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                  {Icons.thumbsUp}
-                </Text>
-              ) : null}
-              degrees={Number(0)}
-              buttonColor="#0F0"
-              onPress={() => this.thumbsUpEvent()}>
-              </ActionButton>
-              <ActionButton
-              style={styles.thumbsDownButton}
-              icon={this.state.fontLoaded ? (
-                <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                  {Icons.thumbsDown}
-                </Text>
-              ) : null}
-              buttonColor="#F00"
-              degrees={Number(0)}
-              onPress={() => this.thumbsDownEvent()}>
-              </ActionButton>
+            <View style={styles.buttons}>
+              <View style={{width: 80 }}>
+                <ActionButton
+                style={styles.thumbsUpButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.thumbsUp}
+                  </Text>
+                ) : null}
+                degrees={Number(0)}
+                buttonColor="#0F0"
+                onPress={() => this.thumbsUpEvent()}>
+                </ActionButton>
+              </View>
+              <View style={{width: 40}}>
+                <ActionButton
+                style={styles.thumbsDownButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.thumbsDown}
+                  </Text>
+                ) : null}
+                buttonColor="#F00"
+                degrees={Number(0)}
+                onPress={() => this.thumbsDownEvent()}>
+                </ActionButton>
+              </View>
             </View>
           </View>
         </Modal>
@@ -310,16 +321,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  textInput: {
-    height: 40,
-    width: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    borderColor: 'gray',
-    borderWidth: 1,
-    textAlign: 'center',
-  },
   centerButton: {
     position: 'absolute',
     width: 20,
@@ -337,12 +338,14 @@ const styles = StyleSheet.create({
   thumbsUpButton: {
     width: 20,
     height: 20,
-    marginLeft: -40
   },
   thumbsDownButton: {
     width: 20,
     height: 20,
-    marginLeft: 40
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   filterModal: {
     flex: .5,
@@ -350,6 +353,7 @@ const styles = StyleSheet.create({
   },
   eventModal: {
      flex: .5, 
+     flexDirection: 'column',
      alignItems: 'center',
      backgroundColor: '#fff',
   }
