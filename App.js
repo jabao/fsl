@@ -265,6 +265,7 @@ export default class App extends Component {
           <View style={styles.modal}>
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
+            <Text>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.button}>
               <ActionButton
               style={styles.thumbsUpButton}
