@@ -90,6 +90,7 @@ export default class App extends Component {
     updates['/score'] = this.state.selectedEvent.score;
     firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
     console.log(this.state.selectedEvent.score);
+    console.log(this.state.renderedMarkers);
   }
 
   thumbsUpEvent () {
@@ -169,7 +170,9 @@ export default class App extends Component {
         }
       }.bind(this));
       this.setState({markers: items});
-      this.setState({renderedMarkers: items});
+      if(this.state.tag == 'none'){
+        this.setState({renderedMarkers: items});
+      }
     }.bind(this));
   }
 
@@ -247,7 +250,7 @@ export default class App extends Component {
        <Modal isVisible={this.state.filterModal}
           onBackdropPress={this.hideFilterModal}
           onModalHide={this.getFilteredResults.bind(this)}>
-          <View style={styles.modal}>
+          <View style={styles.filterModal}>
             <Text style={{textAlign:'center'}}>Choose Filter</Text>
             <Picker
               selectedValue={this.state.tag.toString()}
@@ -262,7 +265,7 @@ export default class App extends Component {
         </Modal>
         <Modal isVisible={this.state.eventModal}
         onBackdropPress={this.hideEventModal}>
-          <View style={styles.modal}>
+          <View style={styles.eventModal}>
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
@@ -341,7 +344,11 @@ const styles = StyleSheet.create({
     height: 20,
     marginLeft: 40
   },
-  modal: {
+  filterModal: {
+    flex: .5,
+    backgroundColor: '#fff',
+  },
+  eventModal: {
      flex: .5, 
      alignItems: 'center',
      backgroundColor: '#fff',
