@@ -27,7 +27,8 @@ class Popup extends React.Component{
         start: new Date(this.state.eventStartDate).getTime(),
         end: new Date(this.state.eventEndDate).getTime()
       },
-      tag: this.state.tag
+      tag: this.state.tag,
+      score: 0
     });
     console.log('hi')
     console.log(this.state.name)
@@ -102,14 +103,7 @@ class Popup extends React.Component{
       );
     }
   }
-/*const popupStyle = StyleSheet.create({
-  button: {
-    width:60px,
-  }
-
-  popupDialog: {
-    width:300px,
-  }
-});*/
+const styles = StyleSheet.create({
+});
 
 export default Popup;

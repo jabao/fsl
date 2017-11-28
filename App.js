@@ -85,6 +85,31 @@ export default class App extends Component {
 
   hideEventModal = () => this.setState({ eventModal: false })
 
+  updateScore () {
+    var updates = {};
+    updates['/score'] = this.state.selectedEvent.score;
+    firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
+    console.log(this.state.selectedEvent.score);
+  }
+
+  thumbsUpEvent () {
+    this.setState(prevState => ({
+      selectedEvent: {
+        ...prevState.selectedEvent,
+        score: prevState.selectedEvent.score + 1
+      }
+    }), this.updateScore);
+  }
+
+  thumbsDownEvent () {
+    this.setState(prevState => ({
+      selectedEvent: {
+        ...prevState.selectedEvent,
+        score: prevState.selectedEvent.score - 1
+      }
+    }), this.updateScore);
+  }
+
   //calls getLocation method after map is rendered
   async componentDidMount() {
     this._getLocationAsync();
@@ -240,6 +265,30 @@ export default class App extends Component {
           <View style={styles.modal}>
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
+            <View style={styles.button}>
+              <ActionButton
+              style={styles.thumbsUpButton}
+              icon={this.state.fontLoaded ? (
+                <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                  {Icons.thumbsUp}
+                </Text>
+              ) : null}
+              degrees={Number(0)}
+              buttonColor="#0F0"
+              onPress={() => this.thumbsUpEvent()}>
+              </ActionButton>
+              <ActionButton
+              style={styles.thumbsDownButton}
+              icon={this.state.fontLoaded ? (
+                <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                  {Icons.thumbsDown}
+                </Text>
+              ) : null}
+              buttonColor="#F00"
+              degrees={Number(0)}
+              onPress={() => this.thumbsDownEvent()}>
+              </ActionButton>
+            </View>
           </View>
         </Modal>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
@@ -281,9 +330,19 @@ const styles = StyleSheet.create({
     top: 10,
     left: '80%',
   },
+  thumbsUpButton: {
+    width: 20,
+    height: 20,
+    marginLeft: -40
+  },
+  thumbsDownButton: {
+    width: 20,
+    height: 20,
+    marginLeft: 40
+  },
   modal: {
      flex: .5, 
-     backgroundColor: 
-     '#fff',
+     alignItems: 'center',
+     backgroundColor: '#fff',
   }
 });
