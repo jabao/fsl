@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import {Permissions, Location} from 'expo';
+import { Platform, StyleSheet, Text, View, Button, Picker } from 'react-native';
+import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
 import firebase from 'firebase';
+import ActionButton from 'react-native-action-button';
+import Modal from 'react-native-modal';
+import { Icons } from 'react-native-fontawesome';
 
 //import image files for markers
 import veg from './images/veg.png';
@@ -28,20 +31,28 @@ export default class App extends Component {
       messagingSenderId: "57827792969"
     };
     firebase.initializeApp(config);
+    this.state = {
+      userRegion: {
+        latitude: 32.8801,
+        longitude: -117.2340,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      mapRegion: {
+        latitude: 32.8801,
+        longitude: -117.2340,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+     markers: [],
+     filteredMarkers: [],
+     renderedMarkers: [],
+     showModal: false,
+     eventModal: false,
+     tag: 'none',
+     selectedEvent: 'null'
+    }
   }
-
-  state = {
-    locationResultlat: null,
-    text: '',
-    locationResultlong: null,
-    mapRegion: {
-      latitude: 32.8801,
-      longitude: -117.2340,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
-    },
-   markers: [],
-  };
 
 
     //Gets user location and updates mapRegion in state
@@ -50,26 +61,66 @@ export default class App extends Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
     this.setState({
-      locationResultlat: JSON.stringify(location.coords.latitude),
-      locationResultlong: JSON.stringify(location.coords.longitude)
+      userRegion: {
+        latitude:  Number(JSON.stringify(location.coords.latitude)),
+        longitude: Number(JSON.stringify(location.coords.longitude)),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }
     });
 
     //update mapRegion with user location
-    let prevState = this.state;
     this.setState({
-      mapRegion: {
-        latitude: Number(prevState.locationResultlat),
-        longitude: Number(prevState.locationResultlong),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-
-      },
+      mapRegion: this.state.userRegion
     });
   };
 
-    //calls getLocation method after map is rendered
-  componentDidMount() {
+  //toggle Filter Modal
+  showFilterModal = () => this.setState({ filterModal: true })
+
+  hideFilterModal = () => this.setState({ filterModal: false })
+
+  //toggle Event Modal
+  showEventModal = (marker) => this.setState({ eventModal: true, selectedEvent: marker })
+
+  hideEventModal = () => this.setState({ eventModal: false })
+
+  //update selected event's score in database
+  updateScore () {
+    var updates = {};
+    updates['/score'] = this.state.selectedEvent.score;
+    firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
+    console.log(this.state.selectedEvent.score);
+    console.log(this.state.renderedMarkers);
+  }
+
+  //function when user thumbs up event
+  thumbsUpEvent () {
+    this.setState(prevState => ({
+      selectedEvent: {
+        ...prevState.selectedEvent,
+        score: prevState.selectedEvent.score + 1
+      }
+    }), this.updateScore);
+  }
+
+  //function when user thumbs down event
+  thumbsDownEvent () {
+    this.setState(prevState => ({
+      selectedEvent: {
+        ...prevState.selectedEvent,
+        score: prevState.selectedEvent.score - 1
+      }
+    }), this.updateScore);
+  }
+
+  //calls getLocation method after map is rendered
+  async componentDidMount() {
     this._getLocationAsync();
+    await Font.loadAsync({
+      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
+    });
+    this.setState({ fontLoaded: true });
   }
 
 
@@ -107,7 +158,9 @@ export default class App extends Component {
     }
   }
 
+  //after component is rendered
   componentWillMount() {
+    //pull events from database
     let eventsRef = firebase.database().ref('events');
     eventsRef.on('value', function(data) {
       var items = [];
@@ -117,24 +170,45 @@ export default class App extends Component {
         let now = new Date();
         if (new Date(item.date.start) <= now &&
             now <= new Date(item.date.end)) {
-          item['.key'] = dbevent.key;
+          item['key'] = dbevent.key;
           items.push(item);
         }
       }.bind(this));
+      //set markers in state and renderedmarkers if not currently filtered
       this.setState({markers: items});
+      if(this.state.tag == 'none'){
+        this.setState({renderedMarkers: items});
+      }
     }.bind(this));
+  }
+
+  //get events that have a certain tag and sets them to renderedMarkers
+  getFilteredResults() {
+    if(this.state.tag == 'none'){
+      this.setState({renderedMarkers: this.state.markers});
+    }else{
+      var items = [];
+      this.state.markers.map(function (marker) {
+        if(marker.tag == this.state.tag){
+          items.push(marker);
+        }
+      }, this);
+      this.setState({filteredMarkers: items});
+      this.setState({renderedMarkers: items});
+    }
   }
 
   componentWillUnmount() {
     firebase.off();
   }
 
-  render() {
+  render() {    
     return (
       <View
         style={styles.container}
       >
       <MapView
+        ref = {(mapView) => { _map = mapView; }}
         style={styles.container}
         onRegionChange={this._handleMapRegionChange}
         region={this.state.mapRegion}
@@ -146,24 +220,92 @@ export default class App extends Component {
           longitudeDelta: 0.0221
         }}
         showsUserLocation={true}
-        showsMyLocationButton={true}
         onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
       }
       >
-
-      {this.state.markers.map(marker => (
+        {this.state.renderedMarkers.map(marker => (
             <MapView.Marker
+              ref={marker => (this.marker = marker)}
               key={marker.key}
-              title={marker.title}
               image={this._setMarkerImg(marker.tag)}
               coordinate={marker.coordinate}
-              description={marker.description}
               onPress={() => {
-               this._popup.show();
-              }}
-            />
-        ))}
+               this.showEventModal(marker);
+              }} />
+        ))}      
       </MapView>
+      <ActionButton buttonColor="rgba(231,76,60,1)" 
+        style={styles.filterButton}
+        icon={this.state.fontLoaded ? (
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 25, color: '#fff' }}>
+            {Icons.list}
+          </Text>
+        ) : null}
+        degrees={Number(0)}
+        onPress= {this.showFilterModal}>
+      </ActionButton>
+      <ActionButton buttonColor="rgba(231,76,60,1)" 
+        style={styles.centerButton}
+        icon={this.state.fontLoaded ? (
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+            {Icons.compass}
+          </Text>
+        ) : null}
+        degrees={Number(0)}
+        onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
+      </ActionButton>
+       <Modal isVisible={this.state.filterModal}
+          onBackdropPress={this.hideFilterModal}
+          onModalHide={this.getFilteredResults.bind(this)}>
+          <View style={styles.filterModal}>
+            <Text style={{textAlign:'center'}}>Choose Filter</Text>
+            <Picker
+              selectedValue={this.state.tag.toString()}
+              onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
+              <Picker.Item label="None" value="none" />
+              <Picker.Item label="Food" value="food" />
+              <Picker.Item label="Gluten Free" value="gluten" />
+              <Picker.Item label="Vegetarian" value="veg" />   
+              <Picker.Item label="Other" value="other" />       
+            </Picker>
+          </View>
+        </Modal>
+        <Modal isVisible={this.state.eventModal}
+        onBackdropPress={this.hideEventModal}>
+          <View style={styles.eventModal}>
+            <Text>Event Name: {this.state.selectedEvent.title}</Text>
+            <Text>Event Details: {this.state.selectedEvent.description}</Text>
+            <Text>Score: {this.state.selectedEvent.score}</Text>
+            <View style={styles.buttons}>
+              <View style={{width: 80 }}>
+                <ActionButton
+                style={styles.thumbsUpButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.thumbsUp}
+                  </Text>
+                ) : null}
+                degrees={Number(0)}
+                buttonColor="#0F0"
+                onPress={() => this.thumbsUpEvent()}>
+                </ActionButton>
+              </View>
+              <View style={{width: 40}}>
+                <ActionButton
+                style={styles.thumbsDownButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.thumbsDown}
+                  </Text>
+                ) : null}
+                buttonColor="#F00"
+                degrees={Number(0)}
+                onPress={() => this.thumbsDownEvent()}>
+                </ActionButton>
+              </View>
+            </View>
+          </View>
+        </Modal>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       </View>
     );
@@ -179,14 +321,40 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-   textInput: {
-      height: 40,
-      width: 200,
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-      borderColor: 'gray',
-      borderWidth: 1,
-      textAlign: 'center',
-   }
+  centerButton: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    top: '80%',
+    left: '80%',
+  },
+  filterButton: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    top: 10,
+    left: '80%',
+  },
+  thumbsUpButton: {
+    width: 20,
+    height: 20,
+  },
+  thumbsDownButton: {
+    width: 20,
+    height: 20,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  filterModal: {
+    flex: .5,
+    backgroundColor: '#fff',
+  },
+  eventModal: {
+     flex: .5, 
+     flexDirection: 'column',
+     alignItems: 'center',
+     backgroundColor: '#fff',
+  }
 });
