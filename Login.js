@@ -44,7 +44,7 @@ export class Login extends Component {
 						Forgot your password? 
 					</Text>
 					<TouchableOpacity onPress={this.forgot}>
-						<Text style={styles.signupButton}>Retrieve</Text>
+						<Text style={styles.signupButton}>  Retrieve</Text>
 					</TouchableOpacity>
 				</View>				
 				<View style={styles.signupTextContainer}>
@@ -52,7 +52,7 @@ export class Login extends Component {
 						Don't have an account yet? 
 					</Text>
 					<TouchableOpacity onPress={this.signup}>
-						<Text style={styles.signupButton}>Sign up</Text>
+						<Text style={styles.signupButton}>  Sign up</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>

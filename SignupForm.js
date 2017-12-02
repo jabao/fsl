@@ -23,15 +23,67 @@ export class SignupForm extends Component {
 			password: '',
 			loaded: true,
 		};
-		this.signup=this.signup.bind(this);
+		this.onSignUpPress=this.onSignUpPress.bind(this);
 	}
 
-	signup() {
+	onSignUpPress() {
+		// client side authentication
+		var uname = this.state.email;
+		var pw = this.state.password;
+
+		// email not empty
+		if(!uname.length) {
+			alert("Please enter email!");
+		    this.setState({
+		    	email: '',
+		    	password: '',
+		    });			
+			return;			
+		}		
+
+		// pw length
+		if(pw.length < 6 || pw.length > 12) {
+			alert("Invalid Password Length (6-12 characters)");
+		    this.setState({
+		    	password: '',
+		    });			
+			return;
+		}
+
+		// has upper/lower chars
+		if(pw.toUpperCase() == pw || pw.toLowerCase() == pw) {
+			alert("Invalid Password (must contain Uppercase and Lowercase letters)");
+		    this.setState({
+		    	password: '',
+		    });				
+			return;			
+		}
+
+		// contains special char
+		var specialChars = "@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
+
+		var speicalCharCheck = function(pw) {
+			for(i = 0; i < specialChars.length; i++) {
+				if(pw.indexOf(specialChars[i]) > -1) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		if(!speicalCharCheck(pw)) {
+			alert("Invalid Password (must contain one speical character)");
+		    this.setState({
+		    	password: '',
+		    });				
+			return;				
+		}
+
 		this.setState({
 			loaded: false
 		});
 
-		firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+		firebase.auth().createUserWithEmailAndPassword(this.state.email, pw)
 			.then(function() {
 				alert("Sign up successful!");
 				// return to login page after sign up
@@ -47,38 +99,7 @@ export class SignupForm extends Component {
 			    });
 			}.bind(this));
 
-		/*
-		app.createUser({
-			'email': this.state.email,
-			'password': this.state.password
-		}, (error, userData) => {
-			if(error) {
-				switch(error.code) {
-					case "EMAIL_TAKEN":
-						alert("The new user account cannot be created because the email is already in use.");
-						break;
-					case "INVALID_EMAIL":
-						alert("The specified email is not a valid email.");
-          				break;
-          			default:
-          				alert("Error creating user:");
-				}
-			}
-			else {
-				alert('Your account was created!');
-			}
-
-			this.setState({
-				email: '',
-				password: '',
-				loaded: true
-			});
-		});
-		*/
-
-
 	}
-
 
 
 	render() {
@@ -88,7 +109,7 @@ export class SignupForm extends Component {
 				barStyle="light-content"
 				/>
 				<TextInput 
-					placeholder="username or email"
+					placeholder="Email"
 					placeholderTextColor='rgba(255,255,255,0.7)'
 					returnKeyType="next"
 					onSubmitEditing={() => this.passwordInput.focus()}
@@ -100,7 +121,7 @@ export class SignupForm extends Component {
 					value={this.state.email}
 					/>
 				<TextInput
-					placeholder="password"
+					placeholder="Password"
 					placeholderTextColor='rgba(255,255,255,0.7)'
 					returnKeyType="go"
 					secureTextEntry
@@ -109,10 +130,14 @@ export class SignupForm extends Component {
 					value={this.state.password}
 					ref={(input) => this.passwordInput = input}
 					/>
+				<Text style = {styles.hints}> 6-12 characters</Text>
+				<Text style = {styles.hints}> Must contain one uppercase and lowercase letter</Text>
+				<Text style = {styles.hints}> Must contain one special character from</Text>
+				<Text style = {styles.hints}> @!#$%^&*()_+[]{}?:;|'"\,./~`-=</Text>
 				<TouchableOpacity style={styles.buttonContainer}>
 					<Text 
 						style={styles.buttonText}
-						onPress={this.signup}
+						onPress={this.onSignUpPress}
 						>
 						Signup
 					</Text>
@@ -141,5 +166,9 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#FFFFFF',
 		fontWeight: '700'
+	},
+	hints:{
+		color: 'rgba(255,255,255,0.5)',		
+		marginBottom: 10,
 	}
 });

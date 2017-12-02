@@ -12,17 +12,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
 
-var config = {
-	apiKey: "AIzaSyBPgko3WSh-2rgjK1a7kSz9w8kClYwVvgo",
-	authDomain: "mijmffl.firebaseapp.com",
-	databaseURL: "https://mijmffl.firebaseio.com",
-	projectId: "mijmffl",
-	storageBucket: "mijmffl.appspot.com",
-	messagingSenderId: "485467070702"
-};
-
-const app = firebase.initializeApp(config);
-
 
 export class LoginForm extends Component {
 
@@ -32,10 +21,44 @@ export class LoginForm extends Component {
 			email: '',
 			password: '',
 		};
-		this.entermap=this.entermap.bind(this);
+		this.onLoginPress=this.onLoginPress.bind(this);
 	}
 
-	entermap() {
+	onLoginPress() {
+		// client side authentication
+		var uname = this.state.email;
+		var pw = this.state.password;
+		var specialChars = "@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
+
+		// email not empty
+		if(!uname.length) {
+			alert("Please enter email!");
+		    this.setState({
+		    	email: '',
+		    	password: '',
+		    });			
+			return;			
+		}	
+
+		var speicalCharCheck = function(pw) {
+			for(i = 0; i < specialChars.length; i++) {
+				if(pw.indexOf(specialChars[i]) > -1) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// pw length, contains lower/upper case and special char
+		if(pw.length < 6 || pw.length > 12 || pw.toUpperCase() == pw || pw.toLowerCase() == pw || !speicalCharCheck(pw)) {
+			alert("Invalid Password!");
+		    this.setState({
+		    	password: '',
+		    });			
+			return;
+		}
+
+
 		// authenticate email and password here
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
 			.then(function() {
@@ -72,7 +95,7 @@ export class LoginForm extends Component {
 				barStyle="light-content"
 				/>
 				<TextInput 
-					placeholder="username or email"
+					placeholder="Email"
 					placeholderTextColor='rgba(255,255,255,0.7)'
 					returnKeyType="next"
 					onSubmitEditing={() => this.passwordInput.focus()}
@@ -84,7 +107,7 @@ export class LoginForm extends Component {
 					value={this.state.email}
 					/>
 				<TextInput
-					placeholder="password"
+					placeholder="Password"
 					placeholderTextColor='rgba(255,255,255,0.7)'
 					returnKeyType="go"
 					secureTextEntry
@@ -96,7 +119,7 @@ export class LoginForm extends Component {
 				<TouchableOpacity style={styles.buttonContainer}>
 					<Text 
 						style={styles.buttonText}
-						onPress={this.entermap}
+						onPress={this.onLoginPress}
 						>Login</Text>
 				</TouchableOpacity>
 			</View>
