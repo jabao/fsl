@@ -82,6 +82,7 @@ class Popup extends React.Component{
           selectedValue={this.state.tag.toString()}
           onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
           <Picker.Item label="Food" value="food" />
+          <Picker.Item label="Cookie" value="cookie" />
           <Picker.Item label="Gluten Free" value="gluten" />
           <Picker.Item label="Vegetarian" value="veg" />   
           <Picker.Item label="Other" value="other" />       
