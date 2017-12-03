@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, Button, Picker, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Picker, TouchableOpacity, Alert } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -27,14 +27,14 @@ export class Map extends Component {
       userRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0421,
+        longitudeDelta: 0.0221
       },
       mapRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0421,
+        longitudeDelta: 0.0221
       },
      markers: [],
      filteredMarkers: [],
@@ -43,7 +43,10 @@ export class Map extends Component {
      eventModal: false,
      tag: 'none',
      selectedEvent: 'null'
-    }
+    };
+
+    this.signout = this.signout.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
 
@@ -56,8 +59,8 @@ export class Map extends Component {
       userRegion: {
         latitude:  Number(JSON.stringify(location.coords.latitude)),
         longitude: Number(JSON.stringify(location.coords.longitude)),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0422,
+        longitudeDelta: 0.0221
       }
     });
 
@@ -190,15 +193,26 @@ export class Map extends Component {
     }
   }
 
-
-  // use log out
-  logout() {
+  // if confirmed, sign out the user
+  signout() {
     firebase.auth().signOut().then(function() {
-      alert('Signed Out');
+      Alert.alert('Signed Out');
       Actions.pop();
     }, function(error) {
-      alert('Sign Out Error', error);
-    });
+      Alert.alert('Sign Out Error', error);
+    });    
+  }
+
+  // user log out confirm
+  logout() {
+    Alert.alert(
+      "Are you sure you wish to logout?", 
+      "We would miss you!",
+      [
+        {text: 'Cancel'},
+        {text: 'Yes', onPress: () => this.signout},
+      ],
+    );
   }
 
   render() {    
