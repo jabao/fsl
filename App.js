@@ -8,7 +8,7 @@ import Popup from './Popup.js';
 import firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
 import Modal from 'react-native-modal';
-import { Icons } from 'react-native-fontawesome';
+import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 //import image files for markers
 import veg from './images/veg.png';
@@ -232,7 +232,7 @@ export default class App extends Component {
               onPress={() => {
                this.showEventModal(marker);
               }} />
-        ))}      
+        ))}
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
@@ -322,26 +322,20 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   centerButton: {
-    position: 'absolute',
-    width: 20,
-    height: 20,
+    borderRadius: 20,
     top: '80%',
-    left: '80%',
+    left: '50%'
   },
   filterButton: {
-    position: 'absolute',
-    width: 20,
-    height: 20,
-    top: 10,
-    left: '80%',
+    borderRadius: 20,
+    top: '20%',
+    left: '20%'
   },
   thumbsUpButton: {
-    width: 20,
-    height: 20,
+    borderRadius: 20
   },
   thumbsDownButton: {
-    width: 20,
-    height: 20,
+    borderRadius: 20
   },
   buttons: {
     flexDirection: 'row',
