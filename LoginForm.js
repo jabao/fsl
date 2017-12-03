@@ -6,12 +6,12 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
-
 
 export class LoginForm extends Component {
 
@@ -20,6 +20,7 @@ export class LoginForm extends Component {
 		this.state = {
 			email: '',
 			password: '',
+			state: ''
 		};
 		this.onLoginPress=this.onLoginPress.bind(this);
 	}
@@ -32,7 +33,7 @@ export class LoginForm extends Component {
 
 		// email not empty
 		if(!uname.length) {
-			alert("Please enter email!");
+			Alert.alert("Please enter email!");
 		    this.setState({
 		    	email: '',
 		    	password: '',
@@ -51,13 +52,12 @@ export class LoginForm extends Component {
 
 		// pw length, contains lower/upper case and special char
 		if(pw.length < 6 || pw.length > 12 || pw.toUpperCase() == pw || pw.toLowerCase() == pw || !speicalCharCheck(pw)) {
-			alert("Invalid Password!");
+			Alert.alert("Invalid Password!");
 		    this.setState({
 		    	password: '',
 		    });			
 			return;
 		}
-
 
 		// authenticate email and password here
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -75,10 +75,10 @@ export class LoginForm extends Component {
 				var errorCode = error.code;
 				var errorMessage = error.message;
 				if (errorCode === 'auth/wrong-password') {
-					alert('Wrong password.');
+					Alert.alert('Wrong password.');
 				} 
 				else {
-					alert(errorMessage);
+					Alert.alert(errorMessage);
 				}	
 				this.setState({
 					password: '',
