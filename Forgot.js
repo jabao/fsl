@@ -39,7 +39,7 @@ export class Forgot extends Component {
 						Already have an account yet?
 					</Text>
 					<TouchableOpacity onPress={this.goback}>
-						<Text style={styles.buttonText}>Sign in</Text>
+						<Text style={styles.buttonText}>  Sign in</Text>
 					</TouchableOpacity>
 				</View>
 			</KeyboardAvoidingView>

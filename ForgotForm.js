@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
