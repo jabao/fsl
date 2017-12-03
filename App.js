@@ -263,7 +263,7 @@ export default class App extends Component {
           onBackdropPress={this.hideFilterModal}
           onModalHide={this.getFilteredResults.bind(this)}>
           <View style={styles.filterModal}>
-            <Text style={{textAlign:'center'}}>Choose Filter</Text>
+            <Text stylme={{textAlign:'center'}}>Choose Filter</Text>
             <Picker
               selectedValue={this.state.tag.toString()}
               onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
@@ -281,6 +281,7 @@ export default class App extends Component {
           <View style={styles.eventModal}>
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
+            <Text>Tag: {this.state.selectedEvent.tag}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
               <View style={{width: 80 }}>
