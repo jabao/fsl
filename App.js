@@ -207,6 +207,10 @@ export default class App extends Component {
     firebase.off();
   }
 
+  report() {
+
+  }
+
   render() {    
     return (
       <View
@@ -284,7 +288,7 @@ export default class App extends Component {
             <Text>Tag: {this.state.selectedEvent.tag}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
-              <View style={{width: 80 }}>
+              <View style={{width: 60 }}>
                 <ActionButton
                 style={styles.thumbsUpButton}
                 icon={this.state.fontLoaded ? (
@@ -297,7 +301,7 @@ export default class App extends Component {
                 onPress={() => this.thumbsUpEvent()}>
                 </ActionButton>
               </View>
-              <View style={{width: 40}}>
+              <View style={{width: 60}}>
                 <ActionButton
                 style={styles.thumbsDownButton}
                 icon={this.state.fontLoaded ? (
@@ -310,6 +314,19 @@ export default class App extends Component {
                 onPress={() => this.thumbsDownEvent()}>
                 </ActionButton>
               </View>
+              <View style={{width: 150}}>
+                <ActionButton
+                style={styles.reportButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.flag}
+                  </Text>
+                ) : null}
+                buttonColor="#F00"
+                degrees={Number(0)}
+                onPress={() => this.report()}>
+                </ActionButton>
+              </View>            
             </View>
           </View>
         </Modal>
@@ -339,6 +356,9 @@ const styles = StyleSheet.create({
     borderRadius: 20
   },
   thumbsDownButton: {
+    borderRadius: 20
+  },
+  reportButton: {
     borderRadius: 20
   },
   buttons: {
