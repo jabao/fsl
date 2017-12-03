@@ -36,14 +36,14 @@ export default class App extends Component {
       userRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0422,
+        longitudeDelta: 0.0221
       },
       mapRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0422,
+        longitudeDelta: 0.0221
       },
      markers: [],
      filteredMarkers: [],
@@ -65,8 +65,8 @@ export default class App extends Component {
       userRegion: {
         latitude:  Number(JSON.stringify(location.coords.latitude)),
         longitude: Number(JSON.stringify(location.coords.longitude)),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0422,
+        longitudeDelta: 0.0221
       }
     });
 
