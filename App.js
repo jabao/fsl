@@ -329,10 +329,10 @@ const styles = StyleSheet.create({
   },
   centerButton: {
     borderRadius: 20,
-    marginBottom: '140%',
   },
   filterButton: {
     borderRadius: 20,
+    marginBottom: '140%',
   },
   thumbsUpButton: {
     borderRadius: 20
