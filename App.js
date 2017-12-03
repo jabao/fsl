@@ -118,7 +118,7 @@ export default class App extends Component {
   async componentDidMount() {
     this._getLocationAsync();
     await Font.loadAsync({
-      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf'),
+      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
     });
     this.setState({ fontLoaded: true });
   }
