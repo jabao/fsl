@@ -27,11 +27,11 @@ export class ForgotForm extends Component {
 	submit() {
 		firebase.auth().sendPasswordResetEmail(this.state.email)
 			.then(function() {
-				alert("Password Reset Email Sent!");
+				Alert.alert("Password Reset Email Sent!");
 				Actions.pop();
 			})
 			.catch(function(error) {
-				alert(error.message);
+				Alert.alert(error.message);
 			    this.setState({
 			    	email: '',
 			    });

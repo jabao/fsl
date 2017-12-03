@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -33,7 +34,7 @@ export class SignupForm extends Component {
 
 		// email not empty
 		if(!uname.length) {
-			alert("Please enter email!");
+			Alert.alert("Please enter email!");
 		    this.setState({
 		    	email: '',
 		    	password: '',
@@ -43,7 +44,7 @@ export class SignupForm extends Component {
 
 		// pw length
 		if(pw.length < 6 || pw.length > 12) {
-			alert("Invalid Password Length (6-12 characters)");
+			Alert.alert("Invalid Password", "Length should be 6-12 characters");
 		    this.setState({
 		    	password: '',
 		    });			
@@ -52,7 +53,7 @@ export class SignupForm extends Component {
 
 		// has upper/lower chars
 		if(pw.toUpperCase() == pw || pw.toLowerCase() == pw) {
-			alert("Invalid Password (must contain Uppercase and Lowercase letters)");
+			Alert.alert("Invalid Password", "Password must contain at least one uppercase and lowercase letter.");
 		    this.setState({
 		    	password: '',
 		    });				
@@ -72,7 +73,7 @@ export class SignupForm extends Component {
 		}
 
 		if(!speicalCharCheck(pw)) {
-			alert("Invalid Password (must contain one speical character)");
+			Alert.alert("Invalid Password", "Password must contain at least one speical character.");
 		    this.setState({
 		    	password: '',
 		    });				
@@ -85,7 +86,7 @@ export class SignupForm extends Component {
 
 		firebase.auth().createUserWithEmailAndPassword(this.state.email, pw)
 			.then(function() {
-				alert("Sign up successful!");
+				Alert.alert("Sign up successful!");
 				// return to login page after sign up
 				Actions.pop();				
 			})
