@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, Button, Picker, TouchableOpacity, Alert } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Picker, Alert } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -8,14 +8,15 @@ import Popup from './Popup.js';
 import firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
 import Modal from 'react-native-modal';
-import { Icons } from 'react-native-fontawesome';
+import FontAwesome, { Icons } from 'react-native-fontawesome';
+import { Actions } from 'react-native-router-flux';
 
 //import image files for markers
 import veg from './images/veg.png';
 import food from './images/food.png';
 import gluten from './images/gluten.png';
+import cookie from './images/cookie.png';
 import other from './images/other.png';
-import { Actions } from 'react-native-router-flux';
 
 
 export class Map extends Component {
@@ -27,13 +28,13 @@ export class Map extends Component {
       userRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0421,
+        latitudeDelta: 0.0422,
         longitudeDelta: 0.0221
       },
       mapRegion: {
         latitude: 32.8801,
         longitude: -117.2340,
-        latitudeDelta: 0.0421,
+        latitudeDelta: 0.0422,
         longitudeDelta: 0.0221
       },
      markers: [],
@@ -43,7 +44,7 @@ export class Map extends Component {
      eventModal: false,
      tag: 'none',
      selectedEvent: 'null'
-    };
+    }
 
     this.logout = this.logout.bind(this);
   }
@@ -112,7 +113,7 @@ export class Map extends Component {
   async componentDidMount() {
     this._getLocationAsync();
     await Font.loadAsync({
-      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
+      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf'),
     });
     this.setState({ fontLoaded: true });
   }
@@ -141,6 +142,10 @@ export class Map extends Component {
 
       case 'food':
         return food;
+        break;
+
+      case 'cookie':
+        return cookie;
         break;
 
       case 'other':
@@ -192,6 +197,9 @@ export class Map extends Component {
     }
   }
 
+  report() {
+
+  }
 
   // user log out confirm
   logout() {
@@ -242,7 +250,7 @@ export class Map extends Component {
               onPress={() => {
                this.showEventModal(marker);
               }} />
-        ))}      
+        ))}
       </MapView>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
@@ -268,12 +276,13 @@ export class Map extends Component {
           onBackdropPress={this.hideFilterModal}
           onModalHide={this.getFilteredResults.bind(this)}>
           <View style={styles.filterModal}>
-            <Text style={{textAlign:'center'}}>Choose Filter</Text>
+            <Text stylme={{textAlign:'center'}}>Choose Filter</Text>
             <Picker
               selectedValue={this.state.tag.toString()}
               onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
               <Picker.Item label="None" value="none" />
               <Picker.Item label="Food" value="food" />
+              <Picker.Item label="Cookie" value="cookie" />   
               <Picker.Item label="Gluten Free" value="gluten" />
               <Picker.Item label="Vegetarian" value="veg" />   
               <Picker.Item label="Other" value="other" />       
@@ -285,9 +294,10 @@ export class Map extends Component {
           <View style={styles.eventModal}>
             <Text>Event Name: {this.state.selectedEvent.title}</Text>
             <Text>Event Details: {this.state.selectedEvent.description}</Text>
+            <Text>Tag: {this.state.selectedEvent.tag}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
-              <View style={{width: 80 }}>
+              <View style={{width: 60 }}>
                 <ActionButton
                 style={styles.thumbsUpButton}
                 icon={this.state.fontLoaded ? (
@@ -300,7 +310,7 @@ export class Map extends Component {
                 onPress={() => this.thumbsUpEvent()}>
                 </ActionButton>
               </View>
-              <View style={{width: 40}}>
+              <View style={{width: 60}}>
                 <ActionButton
                 style={styles.thumbsDownButton}
                 icon={this.state.fontLoaded ? (
@@ -313,6 +323,19 @@ export class Map extends Component {
                 onPress={() => this.thumbsDownEvent()}>
                 </ActionButton>
               </View>
+              <View style={{width: 150}}>
+                <ActionButton
+                style={styles.reportButton}
+                icon={this.state.fontLoaded ? (
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+                    {Icons.flag}
+                  </Text>
+                ) : null}
+                buttonColor="#F00"
+                degrees={Number(0)}
+                onPress={() => this.report()}>
+                </ActionButton>
+              </View>            
             </View>
           </View>
         </Modal>
@@ -331,6 +354,8 @@ export class Map extends Component {
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -362,6 +387,9 @@ const styles = StyleSheet.create({
   thumbsDownButton: {
     width: 20,
     height: 20,
+  },
+  reportButton: {
+    borderRadius: 20
   },
   buttons: {
     flexDirection: 'row',
