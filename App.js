@@ -14,6 +14,7 @@ import FontAwesome, { Icons } from 'react-native-fontawesome';
 import veg from './images/veg.png';
 import food from './images/food.png';
 import gluten from './images/gluten.png';
+import cookie from './images/cookie.png';
 import other from './images/other.png';
 
 
@@ -149,6 +150,10 @@ export default class App extends Component {
         return food;
         break;
 
+      case 'cookie':
+        return cookie;
+        break;
+
       case 'other':
         return other;
         break;
@@ -264,6 +269,7 @@ export default class App extends Component {
               onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
               <Picker.Item label="None" value="none" />
               <Picker.Item label="Food" value="food" />
+              <Picker.Item label="Cookie" value="cookie" />   
               <Picker.Item label="Gluten Free" value="gluten" />
               <Picker.Item label="Vegetarian" value="veg" />   
               <Picker.Item label="Other" value="other" />       
