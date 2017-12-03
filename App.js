@@ -234,14 +234,15 @@ export default class App extends Component {
               }} />
         ))}      
       </MapView>
-      <View></View>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.filterButton}
+        icon={this.state.fontLoaded ? (
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 25, color: '#fff' }}>
+            {Icons.list}
+          </Text>
+        ) : null}
         degrees={Number(0)}
         onPress= {this.showFilterModal}>
-        <Text style={{ fontSize: 25, color: '#fff' }}>
-          <FontAwesome>{Icons.list}</FontAwesome>
-        </Text>
       </ActionButton>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
         style={styles.centerButton}
