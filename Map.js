@@ -45,7 +45,6 @@ export class Map extends Component {
      selectedEvent: 'null'
     };
 
-    this.signout = this.signout.bind(this);
     this.logout = this.logout.bind(this);
   }
 
@@ -193,15 +192,6 @@ export class Map extends Component {
     }
   }
 
-  // if confirmed, sign out the user
-  signout() {
-    firebase.auth().signOut().then(function() {
-      Alert.alert('Signed Out');
-      Actions.pop();
-    }, function(error) {
-      Alert.alert('Sign Out Error', error);
-    });    
-  }
 
   // user log out confirm
   logout() {
@@ -210,7 +200,14 @@ export class Map extends Component {
       "We would miss you!",
       [
         {text: 'Cancel'},
-        {text: 'Yes', onPress: () => this.signout},
+        {text: 'Yes', onPress: () => {
+          firebase.auth().signOut().then(function() {
+            Alert.alert('Signed Out');
+            Actions.pop();
+          }, function(error) {
+            Alert.alert('Sign Out Error', error);
+          });
+        }},
       ],
     );
   }
