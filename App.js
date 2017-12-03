@@ -323,13 +323,10 @@ const styles = StyleSheet.create({
   },
   centerButton: {
     borderRadius: 20,
-    top: '80%',
-    left: '50%'
+    marginBottom: '140%',
   },
   filterButton: {
     borderRadius: 20,
-    top: '20%',
-    left: '20%'
   },
   thumbsUpButton: {
     borderRadius: 20
