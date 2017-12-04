@@ -4,19 +4,44 @@ import { Picker, Platform, StyleSheet, Text, View, TextInput, Button } from 'rea
 import DateTimePicker from './Datepick.js';
 
 class Popup extends React.Component{
-  state = {
-    name: '',
-    details: '',
-    eventStartDate: 'Choose Event Start Time',
-    eventEndDate: 'Choose Event End Time',
-    tag: 'food',
+
+  constructor(props) {
+    super(props);
+    var now = new Date().toLocaleString();
+    this.state = {
+      name: '',
+      details: '',
+      eventStartDate: now,
+      eventEndDate: now,
+      tag: 'food',
+    }
+
+    console.log(this.state.eventStartDate);
   }
+
   show(lat, long) {
     this.lat = lat;
     this.long = long;
     this.popupDialog.show();
   }
+
   sendInformation() {
+    //first make sure everything is valid
+    var valid = () => {
+      // name and time must be filled out, description and tag are optional
+      if(this.state.name === '') return false;
+
+      // past is invalid
+      if(eventStartDate < now) return false;
+      if(eventEndDate < eventStartDate) return false;
+
+      return true;      
+    }
+    if(!valid) {
+      Alert.alert("Invalid input!");
+      return;
+    }
+
     let dbRef = this.props.db.database().ref('events');
     dbRef.push({
       coordinate: {latitude: this.lat, longitude: this.long},
@@ -40,7 +65,9 @@ class Popup extends React.Component{
     console.log(this.long)
     console.log(this.lat)
     this.popupDialog.dismiss()
+
   }
+
 
   setStartDate = (date) => this.setState({eventStartDate: date});
   setEndDate = (date) => this.setState({eventEndDate: date});
