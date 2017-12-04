@@ -28,6 +28,8 @@ class Popup extends React.Component{
         end: new Date(this.state.eventEndDate).getTime()
       },
       tag: this.state.tag,
+      thumbUpUsers: 0,
+      thumbDownUsers: 0,
       score: 0
     });
     console.log('hi')
@@ -88,7 +90,7 @@ class Popup extends React.Component{
           <Picker.Item label="Other" value="other" />       
         </Picker>
         <Button
-          title="Save"
+          title="Create"
           color="#32CD32"
           accessibilityLabel="Learn more about this purple button"
           onPress={() => this.sendInformation()}
