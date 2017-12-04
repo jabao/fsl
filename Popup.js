@@ -36,7 +36,7 @@ class Popup extends React.Component{
     var start = new Date(this.state.eventStartDate).getTime();
     var end = new Date(this.state.eventEndDate).getTime();
     // past is invalid
-    if(start < now - 86400000 || end <= start) {
+    if(start < now || end <= start) {
       Alert.alert("Invalid event time!");
       return;
     }
@@ -68,7 +68,7 @@ class Popup extends React.Component{
 
     this.refs['textInput'].clear(0)
     this.refs['textInputD'].clear(0)
-    
+
     var now = new Date().toLocaleString();
     this.setState({
       name: '',
@@ -95,6 +95,7 @@ class Popup extends React.Component{
           onChangeText={(name) => this.setState({name})}
           ref = {"textInput"}
         />
+        <Text style={{fontSize:17}}>Choose Event Start Time</Text>
         <DateTimePicker
           ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}
           onChange={this.setStartDate}/>
@@ -103,6 +104,7 @@ class Popup extends React.Component{
           color="#4B0082"
           onPress={() => this._startDateTimePicker._showDateTimePicker()}
         />
+        <Text style={{fontSize: 17}}>Choose Event End Time</Text>
         <DateTimePicker
           ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}
           onChange={this.setEndDate}/>
@@ -121,11 +123,11 @@ class Popup extends React.Component{
         <Picker
           selectedValue={this.state.tag.toString()}
           onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
-          <Picker.Item label="Food" value="Food" />
-          <Picker.Item label="Cookie" value="Cookie" />
-          <Picker.Item label="Gluten Free" value="Gluten Free" />
-          <Picker.Item label="Vegetarian" value="Vegetarian" />   
-          <Picker.Item label="Other" value="Other" />       
+          <Picker.Item label="Food" value="food" />
+          <Picker.Item label="Cookie" value="cookie" />
+          <Picker.Item label="Gluten Free" value="gluten" />
+          <Picker.Item label="Vegetarian" value="veg" />   
+          <Picker.Item label="Other" value="other" />       
         </Picker>
         <Button
           title="Create"
