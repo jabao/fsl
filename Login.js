@@ -44,7 +44,7 @@ export class Login extends Component {
 						Forgot your password? 
 					</Text>
 					<TouchableOpacity onPress={this.forgot}>
-						<Text style={styles.signupButton}>  Retrieve</Text>
+						<Text style={styles.signupButton}>  Reset</Text>
 					</TouchableOpacity>
 				</View>				
 				<View style={styles.signupTextContainer}>
