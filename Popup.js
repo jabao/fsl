@@ -68,7 +68,7 @@ class Popup extends React.Component{
 
     this.refs['textInput'].clear(0)
     this.refs['textInputD'].clear(0)
-    
+
     var now = new Date().toLocaleString();
     this.setState({
       name: '',
@@ -95,6 +95,7 @@ class Popup extends React.Component{
           onChangeText={(name) => this.setState({name})}
           ref = {"textInput"}
         />
+        <Text style={{fontSize:17}}>Choose Event Start Time</Text>
         <DateTimePicker
           ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}
           onChange={this.setStartDate}/>
@@ -103,6 +104,7 @@ class Popup extends React.Component{
           color="#4B0082"
           onPress={() => this._startDateTimePicker._showDateTimePicker()}
         />
+        <Text style={{fontSize: 17}}>Choose Event End Time</Text>
         <DateTimePicker
           ref={(endDateTimePicker) => {this._endDateTimePicker = endDateTimePicker;}}
           onChange={this.setEndDate}/>
