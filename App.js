@@ -119,6 +119,11 @@ export default class App extends Component {
   //calls getLocation method after map is rendered
   async componentDidMount() {
     this._getLocationAsync();
+    console.log("Loading Font Awesome...")
+    await Font.loadAsync({
+      FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf')
+    });
+    console.log("Font Awesome loaded!")
     this.setState({ fontLoaded: true });
   }
 
@@ -183,10 +188,6 @@ export default class App extends Component {
         this.setState({renderedMarkers: items});
       }
     }.bind(this));
-
-    Font.loadAsync({
-      FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf')
-    });
   }
 
   //get events that have a certain tag and sets them to renderedMarkers
@@ -248,22 +249,23 @@ export default class App extends Component {
               style={styles.filterButton}
               onPress={this.showFilterModal}
           >
-            <Text>{Icons.compass}</Text>
+            <Text style={{ fontSize: 30 }}>
+              {this.state.fontLoaded ? (
+                <FontAwesome>{Icons.list}</FontAwesome>
+              ) : null}
+            </Text>
           </TouchableOpacity>
 
-          <Button
-              style={styles.filterButton}
-              borderRadius='40'
-              onPress={this.showFilterModal}
-              icon={{ name: 'code' }}
-              title=''
-          />
-
-          <Button
+          <TouchableOpacity
               style={styles.centerButton}
-              onPress= {() =>_map.animateToRegion(this.state.userRegion, 499)}
-              title={Icons.compass}
-          />
+              onPress={() =>_map.animateToRegion(this.state.userRegion, 499)}
+          >
+            <Text style={{ fontSize: 30 }}>
+              {this.state.fontLoaded ? (
+                <FontAwesome>{Icons.compass}</FontAwesome>
+              ) : null}
+            </Text>
+          </TouchableOpacity>
 
         </View>
 
@@ -293,32 +295,33 @@ export default class App extends Component {
             <Text>Tag: {this.state.selectedEvent.tag}</Text>
             <Text>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
+
               <View style={{width: 80 }}>
-                <ActionButton
-                style={styles.thumbsUpButton}
-                icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'FontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.thumbsUp}
+                <TouchableOpacity
+                    style={styles.thumbsUpButton}
+                    onPress={() => this.thumbsUpEvent()}
+                >
+                  <Text style={{ fontSize: 35, color: '#00FF00' }}>
+                    {this.state.fontLoaded ? (
+                      <FontAwesome>{Icons.thumbsUp}</FontAwesome>
+                    ) : null}
                   </Text>
-                ) : null}
-                degrees={Number(0)}
-                buttonColor="#0F0"
-                onPress={() => this.thumbsUpEvent()}>
-                </ActionButton>
+                </TouchableOpacity>
               </View>
+
               <View style={{width: 40}}>
-                <ActionButton
-                style={styles.thumbsDownButton}
-                icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'FontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.thumbsDown}
+                <TouchableOpacity
+                    style={styles.thumbsDownButton}
+                    onPress={() => this.thumbsDownEvent()}
+                >
+                  <Text style={{ fontSize: 35, color: '#FF0000' }}>
+                    {this.state.fontLoaded ? (
+                      <FontAwesome>{Icons.thumbsDown}</FontAwesome>
+                    ) : null}
                   </Text>
-                ) : null}
-                buttonColor="#F00"
-                degrees={Number(0)}
-                onPress={() => this.thumbsDownEvent()}>
-                </ActionButton>
+                </TouchableOpacity>
               </View>
+
             </View>
           </View>
         </Modal>
@@ -347,18 +350,14 @@ const styles = StyleSheet.create({
     bottom: '2%'
   },
   centerButton: {
-    fontFamily: 'FontAwesome',
-    fontSize: 35,
     position: 'relative',
-    borderRadius: 40,
-    color: "rgba(231,76,60,1)"
+    borderRadius: 20,
+    margin: 5
   },
   filterButton: {
-    fontFamily: 'FontAwesome',
-    fontSize: 35,
     position: 'relative',
-    borderRadius: 40,
-    marginBottom: '140%',
+    borderRadius: 20,
+    margin: 5
   },
   thumbsUpButton: {
     borderRadius: 20
