@@ -339,20 +339,21 @@ export default class App extends Component {
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: 150}}>
-                <TouchableOpacity
-                    style={styles.reportButton}
-                    onPress={() => this.report()}
-                >
-                  <Text style={{ fontSize: 35, color: '#404040' }}>
-                    {this.state.fontLoaded ? (
-                      <FontAwesome>{Icons.exclamation}</FontAwesome>
-                    ) : null}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
             </View>
+
+            <View style={{top: '3%', right: '4%', position: 'absolute'}}>
+              <TouchableOpacity
+                  style={styles.reportButton}
+                  onPress={() => this.report()}
+              >
+                <Text style={{ fontSize: 35, color: '#404040' }}>
+                  {this.state.fontLoaded ? (
+                    <FontAwesome>{Icons.exclamation}</FontAwesome>
+                  ) : null}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
           </View>
         </Modal>
 
