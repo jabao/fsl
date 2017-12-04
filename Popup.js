@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PopupDialog from 'react-native-popup-dialog';
-import { Picker, Platform, StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { Picker, Platform, StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 import DateTimePicker from './Datepick.js';
 
 class Popup extends React.Component{
@@ -26,21 +26,21 @@ class Popup extends React.Component{
   }
 
   sendInformation() {
-    //first make sure everything is valid
-    var valid = () => {
-      // name and time must be filled out, description and tag are optional
-      if(this.state.name === '') return false;
 
-      // past is invalid
-      if(eventStartDate < now) return false;
-      if(eventEndDate < eventStartDate) return false;
-
-      return true;      
-    }
-    if(!valid) {
-      Alert.alert("Invalid input!");
+    // name and time must be filled out, description and tag are optional
+    if(this.state.name === '') {
+      Alert.alert("Please input an event name!");
       return;
     }
+    var now = new Date().getTime();
+    var start = new Date(this.state.eventStartDate).getTime();
+    var end = new Date(this.state.eventEndDate).getTime();
+    // past is invalid
+    if(start < now || end <= start) {
+      Alert.alert("Invalid event time!");
+      return;
+    }
+
 
     let dbRef = this.props.db.database().ref('events');
     dbRef.push({

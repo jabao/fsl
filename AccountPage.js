@@ -27,7 +27,7 @@ export class AccountPage extends Component {
 	logout() {
 		Alert.alert(
 		  "Are you sure you wish to logout?", 
-		  "We would miss you!",
+		  "",
 		  [
 		    {text: 'Cancel'},
 		    {text: 'Yes', onPress: () => {

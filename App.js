@@ -208,7 +208,20 @@ export default class App extends Component {
   }
 
   report() {
-    Alert.alert("Thank you! Your report has been recorded!");
+    Alert.alert(
+      "Do you want to report this event?", 
+      "",
+      [
+        {text: 'Cancel'},
+        {text: 'Yes!', onPress: () => {
+          firebase.auth().signOut().then(function() {
+            Alert.alert('Your report has been recorded! Thank you!');
+          }, function(error) {
+            Alert.alert('Ah oh! Error...', error);
+          });
+        }},
+      ],
+    );
   }
 
   render() {    
