@@ -296,10 +296,10 @@ export default class App extends Component {
         <Modal isVisible={this.state.eventModal}
         onBackdropPress={this.hideEventModal}>
           <View style={styles.eventModal}>
-            <Text>Event Name: {this.state.selectedEvent.title}</Text>
-            <Text>Event Details: {this.state.selectedEvent.description}</Text>
-            <Text>Tag: {this.state.selectedEvent.tag}</Text>
-            <Text>Score: {this.state.selectedEvent.score}</Text>
+            <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
+            <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            <Text style={styles.eventDetails}>Tag: {this.state.selectedEvent.tag}</Text>
+            <Text style={styles.eventDetails}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
               <View style={{width: 60 }}>
                 <ActionButton
@@ -331,11 +331,11 @@ export default class App extends Component {
                 <ActionButton
                 style={styles.reportButton}
                 icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.flag}
-                  </Text>
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 30, color: '#fff' }}>
+                    {Icons.exclamation}
+                  </Text>                 
                 ) : null}
-                buttonColor="#F00"
+                buttonColor="gray"
                 degrees={Number(0)}
                 onPress={() => this.report()}>
                 </ActionButton>
@@ -386,6 +386,21 @@ const styles = StyleSheet.create({
      flex: .5, 
      flexDirection: 'column',
      alignItems: 'center',
-     backgroundColor: '#fff',
-  }
+     backgroundColor: '#edf2f9',
+     borderRadius: 20,
+  },
+  eventName: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: '500',
+    marginTop: 15,    
+  },
+  eventDetails: {
+    fontFamily: 'Helvetica',
+    fontSize: 20,
+    color: '#616a77',
+    fontWeight: '300',
+    marginTop: 10,
+    textDecorationLine: 'underline',
+  },   
 });
