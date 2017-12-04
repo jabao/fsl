@@ -5,6 +5,7 @@ import {Login} from './Login';
 import {Signup} from './Signup';
 import {Forgot} from './Forgot';
 import {Map} from './Map';
+import {AccountPage} from './AccountPage';
 
 
 export class Routes extends Component {
@@ -16,6 +17,7 @@ export class Routes extends Component {
 			    	<Scene key="signup" component={Signup} title="Signup"/>
 			    	<Scene key="forgot" component={Forgot} title="Forgot" />
 			    	<Scene key="map" component={Map} title="Map"/>
+			    	<Scene key="account" component={AccountPage} title="AccountPage"/>
 			    </Stack>
 			</Router>
 		);
