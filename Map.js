@@ -13,11 +13,11 @@ import FontAwesome, { Icons } from 'react-native-fontawesome';
 import { Actions } from 'react-native-router-flux';
 
 //import image files for markers
-import veg from './images/veg.png';
-import food from './images/food.png';
-import gluten from './images/gluten.png';
-import cookie from './images/cookie.png';
-import other from './images/other.png';
+import Vegetarian from './images/veg.png';
+import Food from './images/food.png';
+import Gluten from './images/gluten.png';
+import Cookie from './images/cookie.png';
+import Other from './images/other.png';
 
 
 export class Map extends Component {
@@ -124,7 +124,10 @@ export class Map extends Component {
     this._getLocationAsync();
     console.log("Loading Font Awesome...")
     await Font.loadAsync({
-      FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf')
+      FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
+      fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf'),
+      lato: require('./fonts/Lato/Lato-Regular.ttf'),
+      latoBold: require('./fonts/Lato/Lato-Bold.ttf')
     });
     console.log("Font Awesome loaded!")
     this.setState({ fontLoaded: true });
@@ -144,26 +147,26 @@ export class Map extends Component {
   //sets image for MapMarker depending on event's tag
   _setMarkerImg(tag){
     switch(tag) {
-      case 'veg':
-        return veg;
+      case 'Vegetarian':
+        return Vegetarian;
         break;
 
-      case 'gluten':
-        return gluten;
+      case 'Gluten Free':
+        return Gluten;
         break;
 
-      case 'food':
-        return food;
+      case 'Food':
+        return Food;
         break;
 
-      case 'cookie':
-        return cookie;
+      case 'Cookie':
+        return Cookie;
         break;
 
-      case 'other':
-        return other;
+      case 'Other':
+        return Other;
         break;
-        
+
       default:
         return null;
     }
@@ -211,7 +214,7 @@ export class Map extends Component {
 
   report() {
     Alert.alert(
-      "Do you want to report this event?", 
+      "Do you want to report this event?",
       "",
       [
         {text: 'Cancel'},
@@ -227,7 +230,7 @@ export class Map extends Component {
   }
 
 
-  render() {    
+  render() {
     return (
       <View
         style={styles.container}
@@ -301,16 +304,16 @@ export class Map extends Component {
            onBackdropPress={this.hideFilterModal}
            onModalHide={this.getFilteredResults.bind(this)}>
            <View style={styles.filterModal}>
-             <Text stylme={{textAlign:'center'}}>Choose Filter</Text>
+             <Text style={{textAlign:'center'}}>Choose Filter</Text>
              <Picker
                selectedValue={this.state.tag.toString()}
                onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
                <Picker.Item label="None" value="none" />
-               <Picker.Item label="Food" value="food" />
-               <Picker.Item label="Cookie" value="cookie" />   
-               <Picker.Item label="Gluten Free" value="gluten" />
-               <Picker.Item label="Vegetarian" value="veg" />   
-               <Picker.Item label="Other" value="other" />       
+               <Picker.Item label="Food" value="Food" />
+               <Picker.Item label="Cookie" value="Cookie" />
+               <Picker.Item label="Gluten Free" value="Gluten Free" />
+               <Picker.Item label="Vegetarian" value="Vegetarian" />
+               <Picker.Item label="Other" value="Other" />
              </Picker>
            </View>
         </Modal>
@@ -320,8 +323,8 @@ export class Map extends Component {
           <View style={styles.eventModal}>
             <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
             <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
-            <Text style={styles.eventDetails}>Tag: {this.state.selectedEvent.tag}</Text>
-            <Text style={styles.eventDetails}>Score: {this.state.selectedEvent.score}</Text>
+            <Text style={styles.eventOther}>Tag: {this.state.selectedEvent.tag}</Text>
+            <Text style={styles.eventOther}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
 
               <View style={{width: 80 }}>
@@ -421,11 +424,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterModal: {
-    flex: .5,
+    flex: .11,
     backgroundColor: '#fff',
   },
   eventModal: {
-     flex: .5, 
+     flex: .5,
      flexDirection: 'column',
      alignItems: 'center',
      backgroundColor: '#fff',
@@ -435,16 +438,26 @@ const styles = StyleSheet.create({
     margin: 10
   },
   eventName: {
+    fontFamily: 'latoBold',
     fontSize: 30,
     color: 'black',
     fontWeight: '500',
-    marginTop: 15,    
+    marginTop: 15,
   },
   eventDetails: {
+    fontFamily: 'lato',
+    fontSize: 20,
+    color: '#616a77',
+    fontWeight: '300',
+    marginTop: 10,
+  },
+
+  eventOther: {
+    fontFamily: 'lato',
     fontSize: 20,
     color: '#616a77',
     fontWeight: '300',
     marginTop: 10,
     textDecorationLine: 'underline',
-  },  
+  }
 });
