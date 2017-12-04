@@ -420,7 +420,6 @@ const styles = StyleSheet.create({
     marginTop: 15,    
   },
   eventDetails: {
-    fontFamily: 'Helvetica',
     fontSize: 20,
     color: '#616a77',
     fontWeight: '300',
