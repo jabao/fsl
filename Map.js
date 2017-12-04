@@ -371,7 +371,7 @@ export class Map extends Component {
           </View>
         </Modal>
 
-      <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
+      <Popup style={{ flex: .8 }} ref={(popup) => {this._popup = popup;}} db={firebase}/>
 
       </View>
     );
