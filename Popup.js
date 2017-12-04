@@ -65,6 +65,9 @@ class Popup extends React.Component{
     console.log(this.long)
     console.log(this.lat)
     this.popupDialog.dismiss()
+    this.refs['textInput'].clear(0)
+    this.refs['textInputD'].clear(0)
+    this.setState({eventStartDate: 'Choose Event Start Time', eventEndDate: 'Choose Event End Time'})
 
   }
 
@@ -82,7 +85,7 @@ class Popup extends React.Component{
           style={{height: 40}}
           placeholder="Enter Event Name"
           onChangeText={(name) => this.setState({name})}
-          ref = {(textInput) => {this.textInput = textInput; }}
+          ref = {"textInput"}
         />
         <DateTimePicker
           ref={(startDateTimePicker) => {this._startDateTimePicker = startDateTimePicker;}}
@@ -105,7 +108,7 @@ class Popup extends React.Component{
           style={{height: 40}}
           placeholder="Enter Event Details"
           onChangeText={(details) => this.setState({details})}
-          ref = {(textInput) => {this.textInputD = textInput; }}
+          ref = {"textInputD"}
         />
         <Picker
           selectedValue={this.state.tag.toString()}
