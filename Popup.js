@@ -65,10 +65,18 @@ class Popup extends React.Component{
     console.log(this.long)
     console.log(this.lat)
     this.popupDialog.dismiss()
+
     this.refs['textInput'].clear(0)
     this.refs['textInputD'].clear(0)
-    this.setState({eventStartDate: 'Choose Event Start Time', eventEndDate: 'Choose Event End Time'})
-
+    
+    var now = new Date().toLocaleString();
+    this.setState({
+      name: '',
+      details: '',
+      eventStartDate: now,
+      eventEndDate: now,
+      tag: 'food',
+    });
   }
 
 
