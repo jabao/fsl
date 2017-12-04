@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, Button, Picker, Alert } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Picker, Alert,
+         TouchableOpacity } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -11,17 +12,21 @@ import Modal from 'react-native-modal';
 import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 //import image files for markers
-import veg from './images/veg.png';
-import food from './images/food.png';
-import gluten from './images/gluten.png';
-import cookie from './images/cookie.png';
-import other from './images/other.png';
+import Vegetarian from './images/veg.png';
+import Food from './images/food.png';
+import Gluten from './images/gluten.png';
+import Cookie from './images/cookie.png';
+import Other from './images/other.png';
 
 
 export default class App extends Component {
   // Initialize Firebase
   constructor(props) {
     super(props);
+
+    console.ignoredYellowBox = [
+        'Setting a timer'
+    ]
 
     var config = {
       apiKey: "AIzaSyA7jvpayAPe8W7mnUSY2utM9puTkScziZc",
@@ -118,9 +123,14 @@ export default class App extends Component {
   //calls getLocation method after map is rendered
   async componentDidMount() {
     this._getLocationAsync();
+    console.log("Loading Font Awesome...")
     await Font.loadAsync({
+      FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
       fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf'),
+      lato: require('./fonts/Lato/Lato-Regular.ttf'),
+      latoBold: require('./fonts/Lato/Lato-Bold.ttf')
     });
+    console.log("Font Awesome loaded!")
     this.setState({ fontLoaded: true });
   }
 
@@ -138,24 +148,24 @@ export default class App extends Component {
   //sets image for MapMarker depending on event's tag
   _setMarkerImg(tag){
     switch(tag) {
-      case 'veg':
-        return veg;
+      case 'Vegetarian':
+        return Vegetarian;
         break;
 
-      case 'gluten':
-        return gluten;
+      case 'Gluten Free':
+        return Gluten;
         break;
 
-      case 'food':
-        return food;
+      case 'Food':
+        return Food;
         break;
 
-      case 'cookie':
-        return cookie;
+      case 'Cookie':
+        return Cookie;
         break;
 
-      case 'other':
-        return other;
+      case 'Other':
+        return Other;
         break;
         
       default:
@@ -229,121 +239,132 @@ export default class App extends Component {
       <View
         style={styles.container}
       >
-      <MapView
-        ref = {(mapView) => { _map = mapView; }}
-        style={styles.container}
-        onRegionChange={this._handleMapRegionChange}
-        region={this.state.mapRegion}
-        showUserLocation={true}
-        initialRegion = {{
-          latitude: 32.8801,
-          longitude: -117.2340,
-          latitudeDelta: 0.0422,
-          longitudeDelta: 0.0221
-        }}
-        showsUserLocation={true}
-        onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
-      }
-      >
-        {this.state.renderedMarkers.map(marker => (
-            <MapView.Marker
-              ref={marker => (this.marker = marker)}
-              key={marker.key}
-              image={this._setMarkerImg(marker.tag)}
-              coordinate={marker.coordinate}
-              onPress={() => {
-               this.showEventModal(marker);
-              }} />
-        ))}
-      </MapView>
-      <ActionButton buttonColor="rgba(231,76,60,1)" 
-        style={styles.filterButton}
-        icon={this.state.fontLoaded ? (
-          <Text style={{ fontFamily: 'fontAwesome', fontSize: 25, color: '#fff' }}>
-            {Icons.list}
-          </Text>
-        ) : null}
-        degrees={Number(0)}
-        onPress= {this.showFilterModal}>
-      </ActionButton>
-      <ActionButton buttonColor="rgba(231,76,60,1)" 
-        style={styles.centerButton}
-        icon={this.state.fontLoaded ? (
-          <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-            {Icons.compass}
-          </Text>
-        ) : null}
-        degrees={Number(0)}
-        onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
-      </ActionButton>
-       <Modal isVisible={this.state.filterModal}
-          onBackdropPress={this.hideFilterModal}
-          onModalHide={this.getFilteredResults.bind(this)}>
-          <View style={styles.filterModal}>
-            <Text stylme={{textAlign:'center'}}>Choose Filter</Text>
-            <Picker
-              selectedValue={this.state.tag.toString()}
-              onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
-              <Picker.Item label="None" value="none" />
-              <Picker.Item label="Food" value="food" />
-              <Picker.Item label="Cookie" value="cookie" />   
-              <Picker.Item label="Gluten Free" value="gluten" />
-              <Picker.Item label="Vegetarian" value="veg" />   
-              <Picker.Item label="Other" value="other" />       
-            </Picker>
-          </View>
+        <MapView
+          ref = {(mapView) => { _map = mapView; }}
+          style={styles.container}
+          onRegionChange={this._handleMapRegionChange}
+          region={this.state.mapRegion}
+          showUserLocation={true}
+          initialRegion = {{
+            latitude: 32.8801,
+            longitude: -117.2340,
+            latitudeDelta: 0.0422,
+            longitudeDelta: 0.0221
+          }}
+          showsUserLocation={true}
+          onLongPress={e => this._createMarker(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude, 'marker')
+        }
+        >
+          {this.state.renderedMarkers.map(marker => (
+              <MapView.Marker
+                ref={marker => (this.marker = marker)}
+                key={marker.key}
+                image={this._setMarkerImg(marker.tag)}
+                coordinate={marker.coordinate}
+                onPress={() => {
+                 this.showEventModal(marker);
+                }} />
+          ))}
+        </MapView>
+
+        <View style={styles.bottomBar}>
+
+          <TouchableOpacity
+              style={styles.filterButton}
+              onPress={this.showFilterModal}
+          >
+            <Text style={{ fontSize: 30 }}>
+              {this.state.fontLoaded ? (
+                <FontAwesome>{Icons.list}</FontAwesome>
+              ) : null}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+              style={styles.centerButton}
+              onPress={() =>_map.animateToRegion(this.state.userRegion, 499)}
+          >
+            <Text style={{ fontSize: 30 }}>
+              {this.state.fontLoaded ? (
+                <FontAwesome>{Icons.compass}</FontAwesome>
+              ) : null}
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+
+        <Modal isVisible={this.state.filterModal}
+           onBackdropPress={this.hideFilterModal}
+           onModalHide={this.getFilteredResults.bind(this)}>
+           <View style={styles.filterModal}>
+             <Text style={{textAlign:'center'}}>Choose Filter</Text>
+             <Picker
+               selectedValue={this.state.tag.toString()}
+               onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
+               <Picker.Item label="None" value="none" />
+               <Picker.Item label="Food" value="Food" />
+               <Picker.Item label="Cookie" value="Cookie" />   
+               <Picker.Item label="Gluten Free" value="Gluten Free" />
+               <Picker.Item label="Vegetarian" value="Vegetarian" />   
+               <Picker.Item label="Other" value="Other" />       
+             </Picker>
+           </View>
         </Modal>
+
         <Modal isVisible={this.state.eventModal}
         onBackdropPress={this.hideEventModal}>
           <View style={styles.eventModal}>
             <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
             <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
-            <Text style={styles.eventDetails}>Tag: {this.state.selectedEvent.tag}</Text>
-            <Text style={styles.eventDetails}>Score: {this.state.selectedEvent.score}</Text>
+            <Text style={styles.eventOther}>Tag: {this.state.selectedEvent.tag}</Text>
+            <Text style={styles.eventOther}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
-              <View style={{width: 60 }}>
-                <ActionButton
-                style={styles.thumbsUpButton}
-                icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.thumbsUp}
+
+              <View style={{width: 80 }}>
+                <TouchableOpacity
+                    style={styles.thumbsUpButton}
+                    onPress={() => this.thumbsUpEvent()}
+                >
+                  <Text style={{ fontSize: 35, color: '#00FF00' }}>
+                    {this.state.fontLoaded ? (
+                      <FontAwesome>{Icons.thumbsUp}</FontAwesome>
+                    ) : null}
                   </Text>
-                ) : null}
-                degrees={Number(0)}
-                buttonColor="#0F0"
-                onPress={() => this.thumbsUpEvent()}>
-                </ActionButton>
+                </TouchableOpacity>
               </View>
-              <View style={{width: 60}}>
-                <ActionButton
-                style={styles.thumbsDownButton}
-                icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.thumbsDown}
+
+              <View style={{width: 40}}>
+                <TouchableOpacity
+                    style={styles.thumbsDownButton}
+                    onPress={() => this.thumbsDownEvent()}
+                >
+                  <Text style={{ fontSize: 35, color: '#FF0000' }}>
+                    {this.state.fontLoaded ? (
+                      <FontAwesome>{Icons.thumbsDown}</FontAwesome>
+                    ) : null}
                   </Text>
-                ) : null}
-                buttonColor="#F00"
-                degrees={Number(0)}
-                onPress={() => this.thumbsDownEvent()}>
-                </ActionButton>
+                </TouchableOpacity>
               </View>
-              <View style={{width: 150}}>
-                <ActionButton
-                style={styles.reportButton}
-                icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 30, color: '#fff' }}>
-                    {Icons.exclamation}
-                  </Text>                 
-                ) : null}
-                buttonColor="gray"
-                degrees={Number(0)}
-                onPress={() => this.report()}>
-                </ActionButton>
-              </View>            
+
             </View>
+
+            <View style={{top: '3%', right: '4%', position: 'absolute'}}>
+              <TouchableOpacity
+                  style={styles.reportButton}
+                  onPress={() => this.report()}
+              >
+                <Text style={{ fontSize: 35, color: '#404040' }}>
+                  {this.state.fontLoaded ? (
+                    <FontAwesome>{Icons.exclamation}</FontAwesome>
+                  ) : null}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
           </View>
         </Modal>
-      <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
+
+        <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       </View>
     );
   }
@@ -351,6 +372,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -358,12 +380,22 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  bottomBar: {
+    position: 'absolute',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    bottom: '2%'
+  },
   centerButton: {
+    position: 'relative',
     borderRadius: 20,
+    margin: 5
   },
   filterButton: {
+    position: 'relative',
     borderRadius: 20,
-    marginBottom: '140%',
+    margin: 5
   },
   thumbsUpButton: {
     borderRadius: 20
@@ -379,7 +411,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterModal: {
-    flex: .5,
+    flex: .11,
     backgroundColor: '#fff',
   },
   eventModal: {
@@ -390,17 +422,26 @@ const styles = StyleSheet.create({
      borderRadius: 20,
   },
   eventName: {
+  	fontFamily: 'latoBold',
     fontSize: 30,
     color: 'black',
     fontWeight: '500',
     marginTop: 15,    
   },
   eventDetails: {
-    fontFamily: 'Helvetica',
+  	fontFamily: 'lato',
+    fontSize: 20,
+    color: '#616a77',
+    fontWeight: '300',
+    marginTop: 10,
+  },  
+
+  eventOther: {
+  	fontFamily: 'lato',
     fontSize: 20,
     color: '#616a77',
     fontWeight: '300',
     marginTop: 10,
     textDecorationLine: 'underline',
-  },   
+  }
 });
