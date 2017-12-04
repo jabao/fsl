@@ -46,7 +46,6 @@ export class Map extends Component {
      selectedEvent: 'null'
     }
 
-    this.logout = this.logout.bind(this);
   }
 
 
@@ -80,13 +79,18 @@ export class Map extends Component {
 
   hideEventModal = () => this.setState({ eventModal: false })
 
+  showAccount() {
+    Actions.account();
+  }
+
   //update selected event's score in database
   updateScore () {
     var updates = {};
     updates['/score'] = this.state.selectedEvent.score;
     firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
-    console.log(this.state.selectedEvent.score);
-    console.log(this.state.renderedMarkers);
+    console.log(this.state.selectedEvent);
+    //console.log(this.state.selectedEvent.score);
+    //console.log(this.state.renderedMarkers);
   }
 
   //function when user thumbs up event
@@ -94,7 +98,8 @@ export class Map extends Component {
     this.setState(prevState => ({
       selectedEvent: {
         ...prevState.selectedEvent,
-        score: prevState.selectedEvent.score + 1
+        thumbUpUsers: prevState.selectedEvent.thumbUpUsers ? 0 : 1,
+        score: prevState.selectedEvent.score + 1,
       }
     }), this.updateScore);
   }
@@ -201,24 +206,6 @@ export class Map extends Component {
 
   }
 
-  // user log out confirm
-  logout() {
-    Alert.alert(
-      "Are you sure you wish to logout?", 
-      "We would miss you!",
-      [
-        {text: 'Cancel'},
-        {text: 'Yes', onPress: () => {
-          firebase.auth().signOut().then(function() {
-            Alert.alert('Signed Out');
-            Actions.pop();
-          }, function(error) {
-            Alert.alert('Sign Out Error', error);
-          });
-        }},
-      ],
-    );
-  }
 
   render() {    
     return (
@@ -270,7 +257,7 @@ export class Map extends Component {
           </Text>
         ) : null}
         degrees={Number(0)}
-        onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>>
+        onPress= {() =>_map.animateToRegion(this.state.userRegion, 500)}>
       </ActionButton>
        <Modal isVisible={this.state.filterModal}
           onBackdropPress={this.hideFilterModal}
@@ -341,14 +328,14 @@ export class Map extends Component {
         </Modal>
       <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
       <ActionButton buttonColor="rgba(231,76,60,1)" 
-        style={styles.logoutButton}
+        style={styles.accountButton}
         icon={this.state.fontLoaded ? (
-          <Text style={{ fontFamily: 'fontAwesome', fontSize: 15, color: '#fff' }}>
-            Logout
+          <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
+            {Icons.user}
           </Text>
         ) : null}
         degrees={Number(0)}
-        onPress= {this.logout}>
+        onPress= {this.showAccount.bind(this)}>
       </ActionButton>
       </View>
     );
@@ -405,16 +392,11 @@ const styles = StyleSheet.create({
      alignItems: 'center',
      backgroundColor: '#fff',
   },
-  logoutButton: {
+  accountButton: {
     position: 'absolute',
     width: 20,
     height: 20,
-    top: '88%',
-    left: '80%',
+    top: 10,
+    left: '10%',
   },
-  logoutText: {
-    textAlign: 'center',
-    color: 'black',
-    fontWeight: '700'
-  }
 });

@@ -21,30 +21,29 @@ export class AccountPage extends Component {
 
 	constructor(props) {
 		super(props);
-		this.goback = this.goback.bind(this);
 	}
 
 	// user log out confirm
 	logout() {
-	Alert.alert(
-	  "Are you sure you wish to logout?", 
-	  "We would miss you!",
-	  [
-	    {text: 'Cancel'},
-	    {text: 'Yes', onPress: () => {
-	      firebase.auth().signOut().then(function() {
-	        Alert.alert('Signed Out');
-	        Actions.pop();
-	        Actions.pop();
-	      }, function(error) {
-	        Alert.alert('Sign Out Error', error);
-	      });
-	    }},
-	  ],
-	);
+		Alert.alert(
+		  "Are you sure you wish to logout?", 
+		  "We would miss you!",
+		  [
+		    {text: 'Cancel'},
+		    {text: 'Yes', onPress: () => {
+		      firebase.auth().signOut().then(function() {
+		        Alert.alert('Signed Out');
+		        Actions.pop();
+		        Actions.pop();
+		      }, function(error) {
+		        Alert.alert('Sign Out Error', error);
+		      });
+		    }},
+		  ],
+		);
 	}
 
-	goback() {
+	backtomap() {
 		console.log("goback");
 		Actions.pop();
 	}
@@ -63,16 +62,13 @@ export class AccountPage extends Component {
 				behavior="padding"
 				style = {styles.container}
 				>
-		      <ActionButton buttonColor="rgba(231,76,60,1)" 
-		        style={styles.backButton}
-		        icon={(
-		          <Text style={{ fontFamily: 'fontAwesome', fontSize: 25, color: '#fff' }}>
-		            {Icons.backward}
-		          </Text>
-		        )}
-		        degrees={Number(0)}
-		        onPress= {this.goback}>>
-		      </ActionButton>				
+				<TouchableOpacity 
+					style={styles.gobackContainer}
+					onPress={this.backtomap}>
+					<Text 
+						style={styles.gobackText}
+						>	 Back to map</Text>
+				</TouchableOpacity>			
 				<View style = {styles.logoContainer}>
 					<Image 
 						style = {styles.logo}
@@ -80,11 +76,12 @@ export class AccountPage extends Component {
 						/>
 					<Text style={styles.title}>Free Food Locator</Text>
 				</View>
-				<TouchableOpacity style={styles.buttonContainer}>
-				<Text 
-					style={styles.buttonText}
-					onPress={this.logout}
-					>Logout</Text>
+				<TouchableOpacity 
+					style={styles.buttonContainer}
+					onPress={this.logout}>
+					<Text 
+						style={styles.buttonText}
+						>Logout</Text>
 				</TouchableOpacity>
 			</KeyboardAvoidingView>	
 		);
@@ -97,12 +94,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#3498db',
 	},
-	backButton: {
-		position: 'absolute',
-		width: 20,
-		height: 20,
-		top: 10,
-		left: '10%',
+	gobackContainer: {
+		backgroundColor: '#2980b9',
+		top: '5%',
+		paddingVertical: 20,
+	},
+	gobackText: {
+		textAlign: 'left',
+		color: '#FFFFFF',
+		fontWeight: '700'
 	},
 	logo: {
 		width: 100,
