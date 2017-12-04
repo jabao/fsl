@@ -266,7 +266,7 @@ export class Map extends Component {
               style={styles.filterButton}
               onPress={this.showFilterModal}
           >
-            <Text style={{ fontSize: 30 }}>
+            <Text style={{ fontSize: 30, color: '#FFFFFF' }}>
               {this.state.fontLoaded ? (
                 <FontAwesome>{Icons.list}</FontAwesome>
               ) : null}
@@ -277,7 +277,7 @@ export class Map extends Component {
               style={styles.centerButton}
               onPress={() =>_map.animateToRegion(this.state.userRegion, 499)}
           >
-            <Text style={{ fontSize: 30 }}>
+            <Text style={{ fontSize: 30, color: '#FFFFFF' }}>
               {this.state.fontLoaded ? (
                 <FontAwesome>{Icons.compass}</FontAwesome>
               ) : null}
@@ -288,7 +288,7 @@ export class Map extends Component {
               style={styles.accountButton}
               onPress={this.showAccount.bind(this)}
           >
-            <Text style={{ fontSize: 30 }}>
+            <Text style={{ fontSize: 30, color: '#FFFFFF' }}>
               {this.state.fontLoaded ? (
                 <FontAwesome>{Icons.user}</FontAwesome>
               ) : null}
@@ -392,7 +392,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    bottom: '2%'
+    bottom: 0,
+    backgroundColor: '#2980b9'
   },
   centerButton: {
     position: 'relative',
