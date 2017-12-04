@@ -203,7 +203,20 @@ export class Map extends Component {
   }
 
   report() {
-
+    Alert.alert(
+      "Do you want to report this event?", 
+      "",
+      [
+        {text: 'Cancel'},
+        {text: 'Yes!', onPress: () => {
+          firebase.auth().signOut().then(function() {
+            Alert.alert('Your report has been recorded! Thank you!');
+          }, function(error) {
+            Alert.alert('Ah oh! Error...', error);
+          });
+        }},
+      ],
+    );
   }
 
 
@@ -279,10 +292,10 @@ export class Map extends Component {
         <Modal isVisible={this.state.eventModal}
         onBackdropPress={this.hideEventModal}>
           <View style={styles.eventModal}>
-            <Text>Event Name: {this.state.selectedEvent.title}</Text>
-            <Text>Event Details: {this.state.selectedEvent.description}</Text>
-            <Text>Tag: {this.state.selectedEvent.tag}</Text>
-            <Text>Score: {this.state.selectedEvent.score}</Text>
+            <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
+            <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            <Text style={styles.eventDetails}>Tag: {this.state.selectedEvent.tag}</Text>
+            <Text style={styles.eventDetails}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
               <View style={{width: 60 }}>
                 <ActionButton
@@ -314,11 +327,11 @@ export class Map extends Component {
                 <ActionButton
                 style={styles.reportButton}
                 icon={this.state.fontLoaded ? (
-                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 35, color: '#fff' }}>
-                    {Icons.flag}
-                  </Text>
+                  <Text style={{ fontFamily: 'fontAwesome', fontSize: 30, color: '#fff' }}>
+                    {Icons.exclamation}
+                  </Text>                 
                 ) : null}
-                buttonColor="#F00"
+                buttonColor="gray"
                 degrees={Number(0)}
                 onPress={() => this.report()}>
                 </ActionButton>
@@ -399,4 +412,18 @@ const styles = StyleSheet.create({
     top: 10,
     left: '10%',
   },
+  eventName: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: '500',
+    marginTop: 15,    
+  },
+  eventDetails: {
+    fontFamily: 'Helvetica',
+    fontSize: 20,
+    color: '#616a77',
+    fontWeight: '300',
+    marginTop: 10,
+    textDecorationLine: 'underline',
+  },  
 });
