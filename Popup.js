@@ -36,7 +36,7 @@ class Popup extends React.Component{
     var start = new Date(this.state.eventStartDate).getTime();
     var end = new Date(this.state.eventEndDate).getTime();
     // past is invalid
-    if(start < now || end <= start) {
+    if(start < now - 86400000 || end <= start) {
       Alert.alert("Invalid event time!");
       return;
     }
@@ -113,11 +113,11 @@ class Popup extends React.Component{
         <Picker
           selectedValue={this.state.tag.toString()}
           onValueChange={(itemValue, itemIndex) => this.setState({tag: itemValue})}>
-          <Picker.Item label="Food" value="food" />
-          <Picker.Item label="Cookie" value="cookie" />
-          <Picker.Item label="Gluten Free" value="gluten" />
-          <Picker.Item label="Vegetarian" value="veg" />   
-          <Picker.Item label="Other" value="other" />       
+          <Picker.Item label="Food" value="Food" />
+          <Picker.Item label="Cookie" value="Cookie" />
+          <Picker.Item label="Gluten Free" value="Gluten Free" />
+          <Picker.Item label="Vegetarian" value="Vegetarian" />   
+          <Picker.Item label="Other" value="Other" />       
         </Picker>
         <Button
           title="Create"
