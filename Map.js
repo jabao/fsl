@@ -397,12 +397,12 @@ const styles = StyleSheet.create({
   centerButton: {
     position: 'relative',
     borderRadius: 20,
-    margin: 5
+    margin: 10
   },
   filterButton: {
     position: 'relative',
     borderRadius: 20,
-    margin: 5
+    margin: 10
   },
   thumbsUpButton: {
     width: 20,
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
   accountButton: {
     borderRadius:20,
-    margin: 5
+    margin: 10
   },
   eventName: {
     fontSize: 30,
