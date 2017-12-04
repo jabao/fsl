@@ -24,6 +24,10 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
+    console.ignoredYellowBox = [
+        'Setting a timer'
+    ]
+
     var config = {
       apiKey: "AIzaSyA7jvpayAPe8W7mnUSY2utM9puTkScziZc",
       authDomain: "mijmfsl.firebaseapp.com",
