@@ -337,7 +337,7 @@ export class Map extends Component {
                 </TouchableOpacity>
               </View>
 
-              <View style={{width: 40}}>
+              <View style={{width: 80}}>
                 <TouchableOpacity
                     style={styles.thumbsDownButton}
                     onPress={() => this.thumbsDownEvent()}
@@ -406,12 +406,12 @@ const styles = StyleSheet.create({
     margin: 10
   },
   thumbsUpButton: {
-    width: 20,
-    height: 20,
+    borderRadius: 20,
+    margin: 10
   },
   thumbsDownButton: {
-    width: 20,
-    height: 20,
+    borderRadius: 20,
+    margin: 10
   },
   reportButton: {
     borderRadius: 20
