@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Platform, StyleSheet, Text, View, Button, Picker } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Picker, Alert } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import MapView from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
@@ -208,7 +208,7 @@ export default class App extends Component {
   }
 
   report() {
-
+    Alert.alert("Thank you! Your report has been recorded!");
   }
 
   render() {    
