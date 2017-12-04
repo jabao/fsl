@@ -268,7 +268,7 @@ export class Map extends Component {
           >
             <Text style={{ fontSize: 30, color: '#FFFFFF' }}>
               {this.state.fontLoaded ? (
-                <FontAwesome>{Icons.list}</FontAwesome>
+                <FontAwesome>{Icons.filter}</FontAwesome>
               ) : null}
             </Text>
           </TouchableOpacity>
