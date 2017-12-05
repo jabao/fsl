@@ -34,7 +34,7 @@ export class Login extends Component {
 						style = {styles.logo}
 						source = {require('./logo.png')}
 						/>
-					<Text style={styles.title}>Free Food Locator</Text>
+					<Text style={styles.title}>Free Finder</Text>
 				</View>
 				<View style={styles.formContainer}>
 					<LoginForm />
