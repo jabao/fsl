@@ -355,7 +355,7 @@ export class Map extends Component {
 
             </View>
 
-            <View style={{top: '3%', right: '4%', position: 'absolute'}}>
+            <View style={{bottom: '3%', right: '4%', position: 'absolute'}}>
               <TouchableOpacity
                   style={styles.reportButton}
                   onPress={() => this.report()}
