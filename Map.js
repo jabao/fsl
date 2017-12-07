@@ -103,23 +103,40 @@ export class Map extends Component {
         }
       });
       if(prevAction === null || prevAction.action != this.state.action){
+        var updates = {};
+        updates['/score'] = this.state.selectedEvent.score;
+        firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates)
         if(prevAction !== null){
           console.log(prevActionKey)
           firebase.database().ref('actions').child(prevActionKey).remove();
+        }else{
+          console.log(firebase.auth().currentUser);
+          firebase.database().ref('actions').push({
+            user_id: user.uid,
+            event_id: this.state.selectedEvent.key,
+            action: this.state.action
+          });
         }
-        var updates = {};
-        updates['/score'] = this.state.selectedEvent.score;
-        firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
-        console.log(firebase.auth().currentUser);
-        firebase.database().ref('actions').push({
-          user_id: user.uid,
-          event_id: this.state.selectedEvent.key,
-          action: this.state.action
-        });
+      }else{
+        var prevState = this.state
+        if(this.state.action == 'like'){
+          this.setState({
+            selectedEvent: {
+              ...prevState.selectedEvent,
+              score: prevState.selectedEvent.score - 1,
+            },
+          });
+        } else{
+          this.setState({
+            selectedEvent: {
+              ...prevState.selectedEvent,
+              score: prevState.selectedEvent.score + 1,
+            },
+          });
+        }
       }
     }
   }
-
   //function when user thumbs up event
   thumbsUpEvent () {
     this.setState(prevState => ({
