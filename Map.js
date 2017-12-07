@@ -86,7 +86,8 @@ export class Map extends Component {
     this.setState({
       eventModal: true,
       selectedEvent: marker,
-      userAction: null
+      userThumbsDown: false,
+      userThumbsUp: false
     })
     var thumbsRef = firebase.database().ref('actions');
     var user = firebase.auth().currentUser;
