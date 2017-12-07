@@ -13,7 +13,7 @@ class Popup extends React.Component{
       details: '',
       eventStartDate: now,
       eventEndDate: now,
-      tag: 'food',
+      tag: 'Food',
     }
 
     console.log(this.state.eventStartDate);
@@ -57,7 +57,6 @@ class Popup extends React.Component{
       thumbDownUsers: 0,
       score: 0
     });
-    console.log('hi')
     console.log(this.state.name)
     console.log(this.state.details)
     console.log(this._startDateTimePicker.state.date)
@@ -75,7 +74,7 @@ class Popup extends React.Component{
       details: '',
       eventStartDate: now,
       eventEndDate: now,
-      tag: 'food',
+      tag: 'Food',
     });
   }
 
@@ -85,7 +84,7 @@ class Popup extends React.Component{
 
   render() {
     return (
-      <PopupDialog
+      <PopupDialog height={380}
         ref={(popupDialog) => { this.popupDialog = popupDialog; }}
       >
         <View>
@@ -149,6 +148,11 @@ class Popup extends React.Component{
     }
   }
 const styles = StyleSheet.create({
+    popup: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '.8',
+  },
 });
 
 export default Popup;
