@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, Button, Picker, Alert,
          TouchableOpacity } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
-import MapView from 'react-native-maps';
+import { MapView } from 'expo';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
@@ -219,8 +219,11 @@ export class Map extends Component {
       [
         {text: 'Cancel'},
         {text: 'Yes!', onPress: () => {
-          firebase.auth().signOut().then(function() {
-            Alert.alert('Your report has been recorded! Thank you!');
+          firebase.database().ref('reports').push({
+            event_id: this.state.selectedEvent.key,
+            time: new Date().getTime()
+          }).then(function() {
+             Alert.alert('Your report has been recorded! Thank you!');
           }, function(error) {
             Alert.alert('Ah oh! Error...', error);
           });
