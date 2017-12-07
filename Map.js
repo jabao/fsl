@@ -90,12 +90,34 @@ export class Map extends Component {
 
   //update selected event's score in database
   updateScore () {
-    var updates = {};
-    updates['/score'] = this.state.selectedEvent.score;
-    firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
-    console.log(this.state.selectedEvent);
-    //console.log(this.state.selectedEvent.score);
-    //console.log(this.state.renderedMarkers);
+    if(firebase.auth().currentUser !== null){
+      var user = firebase.auth().currentUser;
+      var userCheck = firebase.database().ref('actions');
+      var eventKey = this.state.selectedEvent.key
+      var prevAction = null
+      userCheck.orderByChild("user_id").equalTo(user.uid).on("child_added", function(snapshot) {
+        var actions = snapshot.val();
+        if(actions.event_id == eventKey){
+          prevAction = actions;
+          prevActionKey = snapshot.key;
+        }
+      });
+      if(prevAction === null || prevAction.action != this.state.action){
+        if(prevAction !== null){
+          console.log(prevActionKey)
+          firebase.database().ref('actions').child(prevActionKey).remove();
+        }
+        var updates = {};
+        updates['/score'] = this.state.selectedEvent.score;
+        firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
+        console.log(firebase.auth().currentUser);
+        firebase.database().ref('actions').push({
+          user_id: user.uid,
+          event_id: this.state.selectedEvent.key,
+          action: this.state.action
+        });
+      }
+    }
   }
 
   //function when user thumbs up event
@@ -105,7 +127,8 @@ export class Map extends Component {
         ...prevState.selectedEvent,
         thumbUpUsers: prevState.selectedEvent.thumbUpUsers ? 0 : 1,
         score: prevState.selectedEvent.score + 1,
-      }
+      },
+      action: 'like'
     }), this.updateScore);
   }
 
@@ -115,7 +138,8 @@ export class Map extends Component {
       selectedEvent: {
         ...prevState.selectedEvent,
         score: prevState.selectedEvent.score - 1
-      }
+      },
+      action: 'dislike'
     }), this.updateScore);
   }
 
@@ -132,7 +156,6 @@ export class Map extends Component {
     console.log("Font Awesome loaded!")
     this.setState({ fontLoaded: true });
   }
-
 
   //updates mapRegion object in state
   _handleMapRegionChange = mapRegion => {
