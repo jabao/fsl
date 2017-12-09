@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, Button, Picker, Alert,
-         TouchableOpacity } from 'react-native';
+         TouchableOpacity, ScrollView } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
-import MapView from 'react-native-maps';
+import { MapView } from 'expo';
 import PopupDialog from 'react-native-popup-dialog';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Popup from './Popup.js';
@@ -80,7 +80,37 @@ export class Map extends Component {
   hideFilterModal = () => this.setState({ filterModal: false })
 
   //toggle Event Modal
-  showEventModal = (marker) => this.setState({ eventModal: true, selectedEvent: marker })
+  //showEventModal = (marker) => this.setState({ eventModal: true, selectedEvent: marker })
+
+  showEventModal(marker) {
+    this.setState({
+      eventModal: true,
+      selectedEvent: marker,
+      userThumbsDown: false,
+      userThumbsUp: false
+    })
+    var thumbsRef = firebase.database().ref('actions');
+    var user = firebase.auth().currentUser;
+    var userAction = null;
+    console.log(user.uid);
+    thumbsRef.orderByChild("user_id").equalTo(user.uid).on("child_added", function(snapshot) {
+      var actions = snapshot.val();
+      //if previous thumbs up/down exists then save it
+      if(actions.event_id == marker.key){
+        userAction = actions.action;
+        console.log(userAction)
+      }
+    });
+    if(userAction !== null){
+      if(userAction == 'like'){
+        this.setState({userThumbsUp: true, userThumbsDown:false})
+      }else{
+        this.setState({userThumbsDown: true, userThumbsUp: false})
+      }
+    }
+    console.log(this.state.userThumbsUp);
+    console.log(this.state.userThumbsDown);
+  }
 
   hideEventModal = () => this.setState({ eventModal: false })
 
@@ -90,49 +120,105 @@ export class Map extends Component {
 
   //update selected event's score in database
   updateScore () {
-    var updates = {};
-    updates['/score'] = this.state.selectedEvent.score;
-    firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates);
-    console.log(this.state.selectedEvent);
-    //console.log(this.state.selectedEvent.score);
-    //console.log(this.state.renderedMarkers);
+    //check if user is signed in
+    if(firebase.auth().currentUser !== null){
+      var user = firebase.auth().currentUser;
+      var eventKey = this.state.selectedEvent.key
+      var prevAction = null
+      //grab actions from db to check for previous thumbs up/down
+      var userCheck = firebase.database().ref('actions');
+      userCheck.orderByChild("user_id").equalTo(user.uid).on("child_added", function(snapshot) {
+        var actions = snapshot.val();
+        //if previous thumbs up/down exists then save it
+        if(actions.event_id == eventKey){
+          prevAction = actions;
+          prevActionKey = snapshot.key;
+        }
+      });
+      //if no previous action or different action
+      if(prevAction === null || prevAction.action != this.state.action){
+        //update score in events table of db
+        var updates = {};
+        updates['/score'] = this.state.selectedEvent.score;
+        firebase.database().ref('events').child(this.state.selectedEvent.key).update(updates)
+        //remove previous action from actions table in db if it existed
+        if(prevAction !== null){
+          console.log(prevActionKey)
+          firebase.database().ref('actions').child(prevActionKey).remove();
+          this.setState({userThumbsUp:false, userThumbsDown: false})
+        }else{
+          //add new action to actions table
+          console.log(firebase.auth().currentUser);
+          firebase.database().ref('actions').push({
+            user_id: user.uid,
+            event_id: this.state.selectedEvent.key,
+            action: this.state.action
+          });
+          if(this.state.action == 'like'){
+            this.setState({userThumbsUp:true, userThumbsDown: false})
+          }else{
+            this.setState({userThumbsUp:false, userThumbsDown: true})
+          }
+        }
+      //if previous action was same as current action
+      //then change back score in state variable
+      }else{
+        var prevState = this.state
+        if(this.state.action == 'like'){
+          this.setState({
+            selectedEvent: {
+              ...prevState.selectedEvent,
+              score: prevState.selectedEvent.score - 1,
+            },
+          });
+        } else{
+          this.setState({
+            selectedEvent: {
+              ...prevState.selectedEvent,
+              score: prevState.selectedEvent.score + 1,
+            },
+          });
+        }
+      }
+    }
   }
-
   //function when user thumbs up event
   thumbsUpEvent () {
+    //increment score for selected event and call updateScore function
     this.setState(prevState => ({
       selectedEvent: {
         ...prevState.selectedEvent,
         thumbUpUsers: prevState.selectedEvent.thumbUpUsers ? 0 : 1,
         score: prevState.selectedEvent.score + 1,
-      }
+      },
+      action: 'like'
     }), this.updateScore);
   }
 
   //function when user thumbs down event
   thumbsDownEvent () {
+    //decrement score for selected event and call updateScore function
     this.setState(prevState => ({
       selectedEvent: {
         ...prevState.selectedEvent,
         score: prevState.selectedEvent.score - 1
-      }
+      },
+      action: 'dislike'
     }), this.updateScore);
   }
 
-  //calls getLocation method after map is rendered
   async componentDidMount() {
+    //calls getLocation method after map is rendered
     this._getLocationAsync();
-    console.log("Loading Font Awesome...")
+    //loads font libraries required
     await Font.loadAsync({
       FontAwesome: require('./fonts/font-awesome-4.7.0/fonts/FontAwesome.otf'),
       fontAwesome: require('./fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf'),
       lato: require('./fonts/Lato/Lato-Regular.ttf'),
       latoBold: require('./fonts/Lato/Lato-Bold.ttf')
     });
-    console.log("Font Awesome loaded!")
     this.setState({ fontLoaded: true });
   }
-
 
   //updates mapRegion object in state
   _handleMapRegionChange = mapRegion => {
@@ -219,8 +305,11 @@ export class Map extends Component {
       [
         {text: 'Cancel'},
         {text: 'Yes!', onPress: () => {
-          firebase.auth().signOut().then(function() {
-            Alert.alert('Your report has been recorded! Thank you!');
+          firebase.database().ref('reports').push({
+            event_id: this.state.selectedEvent.key,
+            time: new Date().getTime()
+          }).then(function() {
+             Alert.alert('Your report has been recorded! Thank you!');
           }, function(error) {
             Alert.alert('Ah oh! Error...', error);
           });
@@ -322,7 +411,9 @@ export class Map extends Component {
         onBackdropPress={this.hideEventModal}>
           <View style={styles.eventModal}>
             <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
-            <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            <ScrollView>
+              <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            </ScrollView>
             <Text style={styles.eventOther}>Tag: {this.state.selectedEvent.tag}</Text>
             <Text style={styles.eventOther}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
@@ -332,7 +423,7 @@ export class Map extends Component {
                     style={styles.thumbsUpButton}
                     onPress={() => this.thumbsUpEvent()}
                 >
-                  <Text style={{ fontSize: 35, color: '#00FF00' }}>
+                  <Text style={[styles.thumbsUpText, this.state.userThumbsUp && styles.bold]}>
                     {this.state.fontLoaded ? (
                       <FontAwesome>{Icons.thumbsUp}</FontAwesome>
                     ) : null}
@@ -345,7 +436,7 @@ export class Map extends Component {
                     style={styles.thumbsDownButton}
                     onPress={() => this.thumbsDownEvent()}
                 >
-                  <Text style={{ fontSize: 35, color: '#FF0000' }}>
+                  <Text style={[styles.thumbsDownText, this.state.userThumbsDown && styles.bold]}>
                     {this.state.fontLoaded ? (
                       <FontAwesome>{Icons.thumbsDown}</FontAwesome>
                     ) : null}
@@ -355,7 +446,7 @@ export class Map extends Component {
 
             </View>
 
-            <View style={{top: '3%', right: '4%', position: 'absolute'}}>
+            <View style={{bottom: '3%', right: '4%', position: 'absolute'}}>
               <TouchableOpacity
                   style={styles.reportButton}
                   onPress={() => this.report()}
@@ -371,7 +462,7 @@ export class Map extends Component {
           </View>
         </Modal>
 
-      <Popup style={{ flex: .8 }} ref={(popup) => {this._popup = popup;}} db={firebase}/>
+      <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
 
       </View>
     );
@@ -408,6 +499,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 10
   },
+  thumbsUpText: {
+    fontSize: 35,
+    color: '#00FF00'
+  },
+  thumbsDownText: {
+    fontSize: 35,
+    color: '#FF0000'
+  },
   thumbsUpButton: {
     borderRadius: 20,
     margin: 10
@@ -422,6 +521,9 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  bold: {
+    fontSize: 45,
   },
   filterModal: {
     flex: .11,
