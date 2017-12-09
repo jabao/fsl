@@ -2,14 +2,18 @@
    "expo": {
     "name": "Free Finder",
     "icon": "./images/food.png",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "slug": "freefinder",
     "sdkVersion": "22.0.0",
+    "packagerOpts": {
+      "nonPersistent": "--nonPersistent"
+    },
     "ios": {
       "bundleIdentifier": "com.soundduel.blog"
     },
     "android": {
       "package": "com.soundduel.blog",
+      "versionCode": 6,
       "config": {
        "googleMaps": {
          "apiKey": "AIzaSyBpg1xqXwLSJmjpnqN1P2BIuL_4xHFDflw	",
