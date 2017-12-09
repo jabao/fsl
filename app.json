@@ -13,7 +13,8 @@
     },
     "android": {
       "package": "com.soundduel.blog",
-      "versionCode": 6,
+      "versionCode": 7,
+      "permissions": ["WAKE_LOCK"],
       "config": {
        "googleMaps": {
          "apiKey": "AIzaSyBpg1xqXwLSJmjpnqN1P2BIuL_4xHFDflw	",

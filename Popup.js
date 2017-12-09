@@ -53,8 +53,6 @@ class Popup extends React.Component{
         end: new Date(this.state.eventEndDate).getTime()
       },
       tag: this.state.tag,
-      thumbUpUsers: 0,
-      thumbDownUsers: 0,
       score: 0
     });
     console.log(this.state.name)
