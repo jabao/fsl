@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, Button, Picker, Alert,
-         TouchableOpacity } from 'react-native';
+         TouchableOpacity, ScrollView } from 'react-native';
 import {Permissions, Location, Font} from 'expo';
 import { MapView } from 'expo';
 import PopupDialog from 'react-native-popup-dialog';
@@ -411,7 +411,9 @@ export class Map extends Component {
         onBackdropPress={this.hideEventModal}>
           <View style={styles.eventModal}>
             <Text style={styles.eventName}>{this.state.selectedEvent.title}</Text>
-            <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            <ScrollView>
+              <Text style={styles.eventDetails}>Details: {this.state.selectedEvent.description}</Text>
+            </ScrollView>
             <Text style={styles.eventOther}>Tag: {this.state.selectedEvent.tag}</Text>
             <Text style={styles.eventOther}>Score: {this.state.selectedEvent.score}</Text>
             <View style={styles.buttons}>
@@ -460,7 +462,7 @@ export class Map extends Component {
           </View>
         </Modal>
 
-      <Popup style={{ flex: .8 }} ref={(popup) => {this._popup = popup;}} db={firebase}/>
+      <Popup ref={(popup) => {this._popup = popup;}} db={firebase}/>
 
       </View>
     );
