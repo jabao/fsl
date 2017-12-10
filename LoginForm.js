@@ -7,7 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -26,6 +27,7 @@ export class LoginForm extends Component {
 	}
 
 	onLoginPress() {
+		Keyboard.dismiss();
 		// client side authentication
 		var uname = this.state.email;
 		var pw = this.state.password;
