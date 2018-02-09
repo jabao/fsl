@@ -1,6 +1,6 @@
 <h1>Free Finder</h1>
 <p>A mobile application that allows users to find and create events giving out free stuff on the map.</p>
-<p>Made with React Native</p>
+<p>Made with React Native and Firebase</p>
 
 <h1>Creators</h1>
 <ul>
